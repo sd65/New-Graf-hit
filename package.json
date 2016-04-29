@@ -1,0 +1,28 @@
+{
+  "name": "new-grah-hit",
+  "version": "1.0.0",
+  "description": "Revamped the website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sd65/New-Graf-hit.git"
+  },
+  "author": "Emilie Confais, Clément Letoc & Sylvain Doignon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sd65/New-Graf-hit/issues"
+  },
+  "homepage": "https://github.com/sd65/New-Graf-hit#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+
+  "config": {
+    "PORT": 8080,
+    "SITE_TITLE" : "Graf'hit",
+    "SITE_URL" : "https://graphit.fr"
+  }
+}

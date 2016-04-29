@@ -1,0 +1,12 @@
+.top-bar-left  {
+  margin-top: 5px;
+}
+
+.top-bar-left img {
+  padding-bottom: 2px;
+  width: 30px;
+}
+
+.top-bar-left li {
+  display: inline;
+}
