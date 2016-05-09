@@ -4,11 +4,12 @@ block vars
   - var pageTitle="Accueil"
 
 block content
-  p Vous êtes sur l'index
-  p Voici un exemple de variable :  #{pageTitle}
-  p Voici quelques liens :
-  ul
-    li
-      a(href="about") About
-    li
-      a(href="blabla") Une 404
+  block contentAjax
+    p Vous êtes sur l'index
+    p Voici un exemple de variable :  #{pageTitle}
+    p Voici quelques liens :
+    ul
+      li
+        a(href="about") About
+      li
+        a(href="blabla") Une 404

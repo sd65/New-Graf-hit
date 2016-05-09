@@ -17,12 +17,7 @@
   },
   "homepage": "https://github.com/sd65/New-Graf-hit#readme",
   "dependencies": {
-    "express": "^4.13.4"
-  },
-
-  "config": {
-    "PORT": 8080,
-    "SITE_TITLE" : "Graf'hit",
-    "SITE_URL" : "https://graphit.fr"
+    "express": "^4.13.4",
+    "pug": "^2.0.0-alpha6"
   }
 }

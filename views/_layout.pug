@@ -1,28 +1,42 @@
 block vars
 
-doctype html
-html(lang="fr")
-  head
-    title #{config.SITE_TITLE} | #{pageTitle}
-    meta(name='viewport', content="width=device-width,initial-scale=1.0")
-    link(rel="icon", type="image/png", href="/img/logo.png")
-    link(rel="stylesheet", type="text/css", href="/css/foundation.min.css")
-    link(rel="stylesheet", href="/css/main.css")
-  body
-    .top-bar
-      .top-bar-left
-        ul.menu
+if (ajax)
+  block contentAjax
+else
+  doctype html
+  html(lang="fr")
+    head
+      title #{config.SITE_TITLE} | #{pageTitle}
+      meta(name='viewport', content="width=device-width,initial-scale=1.0")
+      link(rel="icon", type="image/png", href="/img/logo.png")
+      link(rel="stylesheet", type="text/css", href="/css/foundation.min.css")
+      link(rel="stylesheet", href="/css/nprogress.css")
+      link(rel="stylesheet", href="/css/main.css")
+    body
+      aside.column.small-12.large-3
+        p#intro
           a(href="/")
-            img(src="/img/logo.png")
-            li.menu-text= config.SITE_TITLE
-    
-    block content
+            img#logo(src="/img/logo_full.png")
+          | Est une radio de découvertes musicales basée à Compiègne.
+          | Vous pouvez nous écouter en FM sur le 94.9MHz et en streaming sur cette page.
+        .title-bar.dynamicBackground(data-responsive-toggle="example-menu", data-hide-for="large")
+          button.menu-icon(type=button, data-toggle)
+          .title-bar-title Menu
+        ul.dropdown.menu.vertical#example-menu
+          li
+            a.button.dynamicBackground(href="/") Actualités
+          li
+            a.button.dynamicBackground(href="/grille-des-programmes") Grille des programmes
+          li
+            a.button.dynamicBackground(href="/podcasts") Podcasts
+          li
+            a.button.dynamicBackground(href="/a-propos") A propos
+      section#content.column.small-12.large-9
+        block content
 
-    #scripts
-      script(src='/js/jquery.js')
-      script(src='/js/what-input.js')
-      script(src='/js/foundation.min.js')
-      script(src='/js/main.js')
-
-
-
+      #scripts
+        script(src='/js/jquery.js')
+        script(src='/js/what-input.js')
+        script(src='/js/foundation.min.js')
+        script(src='/js/nprogress.js')
+        script(src='/js/main.js')

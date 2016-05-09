@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 
 // Config (defnied in package.json)
-app.locals.config = require('./package.json').config;
+app.locals.config = require('./config.json');
 
 // Public dir
 app.use(express.static('static'));
@@ -15,10 +15,16 @@ app.set('views', 'views');
 // Define routes
 app
 .get('/', function (req, res) {
-    res.render('index');
+    res.render('index', { ajax: req.query.ajax } );
 })
-.get('/about', function (req, res) {
-    res.render('about');
+.get('/grille-des-programmes', function (req, res) {
+    res.render('grille-des-programmes', { ajax: req.query.ajax } );
+})
+.get('/podcasts', function (req, res) {
+    res.render('podcasts', { ajax: req.query.ajax } );
+})
+.get('/a-propos', function (req, res) {
+    res.render('a-propos', { ajax: req.query.ajax } );
 })
 .get('*', function(req, res){
     res.render('404');

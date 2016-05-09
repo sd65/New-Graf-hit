@@ -1,12 +1,16 @@
-.top-bar-left  {
-  margin-top: 5px;
+#logo {
+  display: block;
 }
 
-.top-bar-left img {
-  padding-bottom: 2px;
-  width: 30px;
+body {
+  background: url("/img/bg.png") no-repeat;
 }
 
-.top-bar-left li {
-  display: inline;
+section#content {
+  background: rgba(255, 255, 255, 0.7);
+  min-height: 100%; 
+}
+
+aside #intro {
+  text-shadow: 1px 1px #fff;
 }
