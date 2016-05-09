@@ -19,18 +19,25 @@ else
             img#logo(src="/img/logo_full.png")
           | Est une radio de découvertes musicales basée à Compiègne.
           | Vous pouvez nous écouter en FM sur le 94.9MHz et en streaming sur cette page.
-        .title-bar.dynamicBackground(data-responsive-toggle="example-menu", data-hide-for="large")
+        .title-bar(data-responsive-toggle="example-menu", data-hide-for="large")
           button.menu-icon(type=button, data-toggle)
           .title-bar-title Menu
         ul.dropdown.menu.vertical#example-menu
           li
-            a.button.dynamicBackground(href="/") Actualités
+            a.button(href="/") Actualités
           li
-            a.button.dynamicBackground(href="/grille-des-programmes") Grille des programmes
+            a.button(href="/grille-des-programmes") Grille des programmes
           li
-            a.button.dynamicBackground(href="/podcasts") Podcasts
+            a.button(href="/podcasts") Podcasts
           li
-            a.button.dynamicBackground(href="/a-propos") A propos
+            a.button(href="/a-propos") A propos
+          section#nowPlaying
+            p Vous écoutez
+            ul
+              li 18h00 Sylvain & The Gang
+              li 18h05 Emilie & The Flowers
+              li 18h10 Emilie & The Flowers
+            p Rechercher un titre
       section#content.column.small-12.large-9
         block content
 

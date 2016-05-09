@@ -3,7 +3,7 @@
 }
 
 body {
-  background: url("/img/bg.png") no-repeat;
+  background: url("/img/bg.png") no-repeat, url("/img/bg2.png") repeat;
 }
 
 section#content {
@@ -11,6 +11,20 @@ section#content {
   min-height: 100%; 
 }
 
-aside #intro {
+aside p, aside #nowPlaying {
   text-shadow: 1px 1px #fff;
+}
+
+aside #nowPlaying {
+ margin-top: 1em;
+}
+
+aside #nowPlaying p {
+ margin-bottom: 0;
+}
+
+aside #nowPlaying ul {
+  list-style-type: none;
+  line-height: 1.2;
+  font-size: 14px;
 }
