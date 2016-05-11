@@ -33,13 +33,10 @@ else
             a.button(href="/a-propos") A propos
           section#nowPlaying
             p Vous écoutez
-            ul
-              li 18h00 Sylvain & The Gang
-              li 18h05 Emilie & The Flowers
-              li 18h10 Emilie & The Flowers
+            ul#lastFive
             p Rechercher un titre passé
             .row
-                select#searchDay.column.large-6
+                select#searchDate.column.large-6
                   - for (var i = 0; i < 15; i++)
                     - var date = myFunctions.returnDate(i)
                       option(value=date)= date
@@ -49,7 +46,7 @@ else
                     - var min = myFunctions.twoDigitsNumber(m)
                     - var heure = h + ":" + min
                     option(value=heure) #{heure}
-                button.button.expanded.secondary Rechercher
+                button#search.button.expanded.secondary Rechercher
                 ul#searchResults
       section#content.column.small-12.large-9
         block content

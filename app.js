@@ -5,6 +5,9 @@ var sharejss = require("sharejss");
 var bodyParser = require("body-parser");
 var app = express();
 
+// Useful functions
+var lib = require("./lib.js");
+
 // Config (definied in package.json)
 app.locals.config = require('./config.json');
 
@@ -41,24 +44,46 @@ app
 })
 .post('/get-programmation', function (req, res) {
     if (req.body.action == "last") {
-      if (req.body.numberLines < 0)
-        var numberLines = 1;
+      var number = req.body.number || 1;
       var d = new Date();
-      var file = d.getFullYear() + "-" + app.locals.myFunctions.twoDigitsNumber(d.getMonth()+1) + "-" + d.getDate();
-      file += "_airplay.log"
-    } else
-      res.status(400);
-    file = app.locals.config.AIRPLAY_FOLDER + file;
-    fs.readFile(file, 'utf-8', function(err, data) {
-        if (err) throw err;
-        var lines = data.trim().split('\n');
-        if (req.body.action == "last") {
-        var lastLine = lines.slice(-numberLines)[0];
-        console.log(lastLine);  
-        } else {
-          true;
-        }
-    });
+      var file = d.getFullYear() + "-";
+      file += app.locals.myFunctions.twoDigitsNumber(d.getMonth()+1) + "-";
+      file += d.getDate() + "_airplay.log";
+      file = app.locals.config.AIRPLAY_FOLDER + file;
+      fs.readFile(file, 'utf-8', function(err, data) {
+          if (err) res.status(500);
+          var lines = data.trim().split("\n");
+          var result = lines.slice(-number);
+          res.send(result);  
+      });
+    } else if (req.body.action == "around") {
+      var date = req.body.date;
+      var hour = req.body.hour;
+      if (!date || !hour) 
+        res.sendStatus(400);
+      else {
+        var day = date.split("/")[0];
+        var month = date.split("/")[1];
+        var d = new Date();
+        var file = d.getFullYear() + "-";
+        file += month + "-" + day + "_airplay.log";
+        file = app.locals.config.AIRPLAY_FOLDER + file;
+        fs.readFile(file, 'utf-8', function(err, data) {
+            if (err) res.sendStatus(404);
+            var numberSearch = parseInt(hour.replace(":",""));
+            var numberSearchMin = numberSearch - 7;
+            var numberSearchMax = numberSearch + 7;
+            var results = [];
+            var lines = data.trim().split("\n");
+            lines.forEach(function (line) {
+              var numberHour = line.split(" ")[0].slice(0,5).replace(":","");
+              if (numberHour > numberSearchMin && numberHour < numberSearchMax)
+                  results.push(line);
+            });
+            res.send(JSON.stringify(results));  
+        });
+      }
+    } else res.sendStatus(400);
 })
 
 // Launch the server

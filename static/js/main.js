@@ -60,20 +60,49 @@ refreshActivePageInMenu();
 
 
 // Set defaults select in menu
-var selector = "#searchDay option[value='" + returnDate() + "']";
+var selector = "#searchDate option[value='" + returnDate() + "']";
 $(selector).attr("selected", "selected").text("Aujourd'hui");
 selector = "#searchHour option[value^='" + (new Date).getHours() + "']";
 $(selector).first().attr("selected", "selected");
 
 
-// Set last
+// Set last 5
 $.ajax({
+  method: "POST",
+  url: "/get-programmation",
+  dataType: "json",
+  data : { 
+    "action" : "last",
+    "number" : 5
+  }
+}).done(function(progs) {
+  var html = "";
+  $.each(progs, function(i, prog) {
+    prog = removeSecFromProg(prog);
+    if(i==0) prog = "<b>" + prog + "</b>";
+    html += "<li>" + prog + "</li>";
+  });
+  $("#lastFive").html(html);
+});
+
+
+// Search
+$("#search").click(function(event) {
+  $.ajax({
+    method: "POST",
     url: "/get-programmation",
+    dataType: "json",
     data : { 
-      "action" : "last" 
-    },
-    dataType: "application/json",
-    method: "POST"
-}).success(function(data) {
-    console.log(data)
+      "action" : "around",
+      "date" : $("#searchDate").val(),
+      "hour" : $("#searchHour").val()
+    }
+  }).done(function(progs) {
+    var html = "";
+    $.each(progs, function(i, prog) {
+      prog = removeSecFromProg(prog);
+      html += "<li>" + prog + "</li>";
+    });
+    $("#searchResults").html(html);
+  });
 });
