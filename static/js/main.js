@@ -67,27 +67,32 @@ $(selector).first().attr("selected", "selected");
 
 
 // Set last 5
-$.ajax({
-  method: "POST",
-  url: "/get-programmation",
-  dataType: "json",
-  data : { 
-    "action" : "last",
-    "number" : 5
-  }
-}).done(function(progs) {
-  var html = "";
-  $.each(progs, function(i, prog) {
-    prog = removeSecFromProg(prog);
-    if(i==0) prog = "<b>" + prog + "</b>";
-    html += "<li>" + prog + "</li>";
+function refreshCurrentProg() {
+  $.ajax({
+    method: "POST",
+    url: "/get-programmation",
+    dataType: "json",
+    data : {
+      "action" : "last",
+      "number" : 5
+    }
+  }).done(function(progs) {
+    var html = "";
+    $.each(progs, function(i, prog) {
+      prog = removeSecFromProg(prog);
+      if(i==0) prog = "<b>" + prog + "</b>";
+      html += "<li>" + prog + "</li>";
+    });
+    $("#lastFive").html(html);
   });
-  $("#lastFive").html(html);
-});
+}
+refreshCurrentProg();
+setInterval(refreshCurrentProg, 7*1000);
 
 
 // Search
 $("#search").click(function(event) {
+  $("#searchResults").html("");
   $.ajax({
     method: "POST",
     url: "/get-programmation",

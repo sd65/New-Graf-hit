@@ -9,8 +9,7 @@ else
       title #{config.SITE_TITLE} | #{pageTitle}
       meta(name='viewport', content="width=device-width,initial-scale=1.0")
       link(rel="icon", type="image/png", href="/img/logo.png")
-      link(rel="stylesheet", type="text/css", href="/css/foundation.min.css")
-      link(rel="stylesheet", href="/css/nprogress.css")
+      link(rel="stylesheet", href="/css/concat.css")
       link(rel="stylesheet", href="/css/main.css")
     body
       aside.column.small-12.large-3
@@ -52,9 +51,6 @@ else
         block content
 
       #scripts
-        script(src='/js/jquery.js')
-        script(src='/js/what-input.js')
-        script(src='/js/foundation.min.js')
-        script(src='/js/nprogress.js')
+        script(src='/js/concat.js')
         script(src='/js/shared.js')
         script(src='/js/main.js')

@@ -10,9 +10,11 @@ var lib = require("./lib.js");
 
 // Config (definied in package.json)
 app.locals.config = require('./config.json');
+var config = app.locals.config;
 
 // Custom shared functions
 app.locals.myFunctions = sharejss("./static/js/shared.js"); 
+var myFunctions = app.locals.myFunctions;
 
 // Public dir
 app.use(express.static('static'));
@@ -47,9 +49,9 @@ app
       var number = req.body.number || 1;
       var d = new Date();
       var file = d.getFullYear() + "-";
-      file += app.locals.myFunctions.twoDigitsNumber(d.getMonth()+1) + "-";
+      file += myFunctions.twoDigitsNumber(d.getMonth()+1) + "-";
       file += d.getDate() + "_airplay.log";
-      file = app.locals.config.AIRPLAY_FOLDER + file;
+      file = config.AIRPLAY_FOLDER + file;
       fs.readFile(file, 'utf-8', function(err, data) {
           if (err) res.status(500);
           var lines = data.trim().split("\n");
@@ -59,20 +61,26 @@ app
     } else if (req.body.action == "around") {
       var date = req.body.date;
       var hour = req.body.hour;
-      if (!date || !hour) 
-        res.sendStatus(400);
+      if (!date || !hour) res.sendStatus(400);
       else {
         var day = date.split("/")[0];
         var month = date.split("/")[1];
         var d = new Date();
         var file = d.getFullYear() + "-";
         file += month + "-" + day + "_airplay.log";
-        file = app.locals.config.AIRPLAY_FOLDER + file;
+        file = config.AIRPLAY_FOLDER + file;
         fs.readFile(file, 'utf-8', function(err, data) {
             if (err) res.sendStatus(404);
-            var numberSearch = parseInt(hour.replace(":",""));
-            var numberSearchMin = numberSearch - 7;
-            var numberSearchMax = numberSearch + 7;
+            var hours = hour.split(":")[0];
+            var minutes = hour.split(":")[1];
+            var gap = 5;
+            var d = new Date();
+            d.setHours(hours);
+            d.setMinutes(minutes);
+            d.setSeconds(d.getSeconds() - gap*60);
+            numberSearchMin = parseInt("" + d.getHours() + myFunctions.twoDigitsNumber(d.getMinutes()));
+            d.setSeconds(d.getSeconds() + gap*2*60);
+            numberSearchMax = parseInt("" + d.getHours() + myFunctions.twoDigitsNumber(d.getMinutes()));
             var results = [];
             var lines = data.trim().split("\n");
             lines.forEach(function (line) {
@@ -87,6 +95,6 @@ app
 })
 
 // Launch the server
-app.listen(app.locals.config.PORT, function () {
-  console.log("App listening on port : " + app.locals.config.PORT);
+app.listen(config.PORT, function () {
+  console.log("App listening on port : " + config.PORT);
 });
