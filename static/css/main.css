@@ -1,5 +1,6 @@
 #logo {
   display: block;
+  width: 100%;
 }
 
 body {
@@ -9,6 +10,29 @@ body {
 section#content {
   background: rgba(255, 255, 255, 0.7);
   min-height: 100%; 
+  padding: 1em 2em;
+}
+
+section#content h1 {
+  color: #777;
+  font-size: 3em;
+}
+
+.media-object {
+  border: 1px solid rgba(10, 10, 10, 0.25);
+}
+
+.media-object .thumbnail {
+  margin-bottom: 0;
+  transition: all .4s ease;
+}
+
+.media-object img {
+  height: 80px;
+}
+
+.media-object .thumbnail:hover {
+  background: #ddd;
 }
 
 aside p, aside #nowPlaying {
@@ -16,15 +40,24 @@ aside p, aside #nowPlaying {
 }
 
 aside #nowPlaying {
- margin-top: 1em;
+ margin: 1em 0;
 }
 
 aside #nowPlaying p {
- margin-bottom: 0;
+ margin-bottom: .5em;
 }
 
 aside #nowPlaying ul {
   list-style-type: none;
   line-height: 1.2;
   font-size: 14px;
+  margin-bottom: 1em;
+}
+
+aside #nowPlaying select {
+  margin-bottom: .5em;
+}
+
+option, select {
+  text-align: center;
 }

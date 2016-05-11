@@ -5,11 +5,16 @@ block vars
 
 block content
   block contentAjax
-    p Vous êtes sur l'index
-    p Voici un exemple de variable :  #{pageTitle}
-    p Voici quelques liens :
-    ul
-      li
-        a(href="about") About
-      li
-        a(href="blabla") Une 404
+    h1 À ré-écouter
+    .media-object
+      .media-object-section
+        .thumbnail
+          img(src="/img/logo.png")
+      .media-object-section
+        h4 You
+        p Really 
+
+    h1 Actualités
+    .callout
+      h5 Titre news
+      p When using the data-closable attribute, you can optionally add Motion UI classes to the attribute to change the closing animation. If no class is added, the plugin defaults to jQuery's .fadeOut() function.
