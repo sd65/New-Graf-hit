@@ -79,7 +79,7 @@ app
             }
             var hours = hour.split(":")[0];
             var minutes = hour.split(":")[1];
-            var gap = 5;
+            var gap = 7;
             var d = new Date();
             d.setHours(hours);
             d.setMinutes(minutes);
@@ -102,5 +102,5 @@ app
 
 // Launch the server
 app.listen(config.PORT, function () {
-  console.log("App listening on port : " + config.PORT);
+  console.log(config.SITE_TITLE + " listening on port : " + config.PORT);
 });

@@ -12,7 +12,7 @@ function setDynamicColors(nb) {
   var colorActive = "hsl(" + tint + ", 60%, 60% )";
   var colorHover = "hsl(" + tint + ", 60%, 65% )";
   var rule = "aside a.button, .title-bar { background-color: " + color + "}"
-  var ruleActive = "aside button.active { background-color: " + colorActive + "}";
+  var ruleActive = "aside a.button.active { background-color: " + colorActive + "}";
   var ruleHover = "aside a.button:hover { background-color: " + colorHover + "}";
   var ruleProgressBar = "#nprogress .bar { background: " + color + " !important}";
   var sheet = window.document.styleSheets[0];
