@@ -12,7 +12,7 @@ function setDynamicColors(nb) {
   var colorActive = "hsl(" + tint + ", 60%, 60% )";
   var colorHover = "hsl(" + tint + ", 60%, 65% )";
   var rule = "aside a.button, .title-bar { background-color: " + color + "}"
-  var ruleActive = "aside a.button.active { background-color: " + colorActive + "}";
+  var ruleActive = "aside button.active { background-color: " + colorActive + "}";
   var ruleHover = "aside a.button:hover { background-color: " + colorHover + "}";
   var ruleProgressBar = "#nprogress .bar { background: " + color + " !important}";
   var sheet = window.document.styleSheets[0];
@@ -84,6 +84,8 @@ function refreshCurrentProg() {
       html += "<li>" + prog + "</li>";
     });
     $("#lastFive").html(html);
+  }).fail(function(data) {
+    $("#lastFive").text("Erreur.");
   });
 }
 refreshCurrentProg();
@@ -93,6 +95,7 @@ setInterval(refreshCurrentProg, 7*1000);
 // Search
 $("#search").click(function(event) {
   $("#searchResults").html("");
+  $("#searchResultsIntro").addClass("hide");
   $.ajax({
     method: "POST",
     url: "/get-programmation",
@@ -103,11 +106,15 @@ $("#search").click(function(event) {
       "hour" : $("#searchHour").val()
     }
   }).done(function(progs) {
+    $("#searchResultsIntro").removeClass("hide");
+    $("#search").addClass("active");
     var html = "";
     $.each(progs, function(i, prog) {
       prog = removeSecFromProg(prog);
       html += "<li>" + prog + "</li>";
     });
     $("#searchResults").html(html);
+  }).fail(function(data) {
+    $("#searchResults").text("Erreur.");
   });
 });

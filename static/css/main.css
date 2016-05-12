@@ -44,7 +44,7 @@ aside #nowPlaying {
 }
 
 aside #nowPlaying p {
- margin-bottom: .5em;
+ margin-bottom: .3em;
 }
 
 aside #search {
@@ -58,6 +58,15 @@ aside #nowPlaying ul {
   margin-bottom: 1em;
   text-transform: capitalize;
 }
+
+aside #nowPlaying ul li {
+  margin-left: 10px;
+}
+
+ul, ul ul {
+  margin-left: 0;
+}
+
 
 aside #nowPlaying select {
   margin-bottom: .5em;

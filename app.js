@@ -53,7 +53,10 @@ app
       file += d.getDate() + "_airplay.log";
       file = config.AIRPLAY_FOLDER + file;
       fs.readFile(file, 'utf-8', function(err, data) {
-          if (err) res.status(500);
+          if (err) {
+            res.sendStatus(500);
+            return;
+          }
           var lines = data.trim().split("\n");
           var result = lines.slice(-number);
           res.send(result);  
@@ -70,7 +73,10 @@ app
         file += month + "-" + day + "_airplay.log";
         file = config.AIRPLAY_FOLDER + file;
         fs.readFile(file, 'utf-8', function(err, data) {
-            if (err) res.sendStatus(404);
+            if (err) {
+              res.sendStatus(404);
+              return;
+            }
             var hours = hour.split(":")[0];
             var minutes = hour.split(":")[1];
             var gap = 5;
