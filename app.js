@@ -72,7 +72,7 @@ function getPodcasts () {
       var date = file.split("_")[0]; 
       var category = file.split("_")[1]; 
       var podcast = {};
-      podcast.file = file;
+      podcast.file = config.PODCAST_URL + file;
       podcast.date = date;
       podcast.originalCategory = category;
       podcast.category = beautifulNameCategory(category);

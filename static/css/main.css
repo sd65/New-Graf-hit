@@ -67,7 +67,6 @@ ul, ul ul {
   margin-left: 0;
 }
 
-
 aside #nowPlaying select {
   margin-bottom: .5em;
 }
@@ -79,4 +78,39 @@ aside .title-bar {
 
 option, select {
   text-align: center;
+}
+
+#player {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  left: 0px;
+  background: rgba(255, 255, 255, .7);
+  border-top: #cacaca solid 1px;
+}
+
+#player #playPause {
+  width: 40px;
+  margin: 0 1em;
+}
+
+#player * {
+  display: inline;
+}
+
+#player #title {
+  font-size: 20px;
+  vertical-align: middle;
+  margin-left: 1em;
+  text-transform: capitalize;
+}
+
+#player #cover {
+  width: 50px;
+  height: 50px;
+}
+
+#player #progress {
+  display: block;
+  width: 100%;
 }

@@ -50,6 +50,13 @@ else
                 ul#searchResults
       section#content.column.small-12.large-9
         block content
+      #player
+        img#playPause(src="/img/play.svg")
+        img#cover(src="/img/logo.png")
+        span#title Chargement...
+        progress#progress(value="0", style="display:none")
+      audio#audio(preload)
+        source(src=config.STREAM_URL, type="audio/mpeg")
 
       #scripts
         script(src='/js/concat.js')

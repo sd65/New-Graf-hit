@@ -80,7 +80,10 @@ function refreshCurrentProg() {
     var html = "";
     $.each(progs, function(i, prog) {
       prog = removeSecFromProg(prog);
-      if(i==0) prog = "<b>" + prog + "</b>";
+      if(i==0) {
+        $("#player #title").text(prog.slice(5));
+        prog = "<b>" + prog + "</b>";
+      }
       html += "<li>" + prog + "</li>";
     });
     $("#lastFive").html(html);
@@ -117,4 +120,49 @@ $("#search").click(function(event) {
   }).fail(function(data) {
     $("#searchResults").text("Erreur.");
   });
+});
+
+
+// Player
+var activeSong;
+function displayPlay (state) {
+  if (state) {
+    $("#progress").show();
+    $("#player #playPause").attr("src", "/img/pause.png");
+  } else {
+    $("#progress").hide();
+    $("#player #playPause").attr("src", "/img/play.svg");
+  }
+}
+$("#playPause").click(function(event) {
+   activeSong = document.getElementById("audio");
+  if(activeSong.paused) {
+    displayPlay(true);
+    activeSong.play();
+  } else {
+    displayPlay(false);
+    activeSong.pause();
+  }
+});
+$("#audio").bind('timeupdate', function() {
+  activeSong = document.getElementById("audio");
+  var percentageOfSong = (activeSong.currentTime/activeSong.duration);
+  if (percentageOfSong)
+    $("#progress").attr("value", percentageOfSong);
+  else {
+    $("#progress").attr("value", 100);
+  }
+});
+
+
+// Podcasts
+
+$("#podcast .thumbnail").click(function(event) {
+  console.log(0)
+   activeSong = document.getElementById("audio");
+   activeSong.src = $(this).data("file");
+   $("#player #title").text($(this).data("title"))
+   activeSong.load();
+   activeSong.play();
+   displayPlay(true);
 });
