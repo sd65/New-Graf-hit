@@ -2,5 +2,6 @@
   "PORT": 8080,
   "SITE_TITLE": "Graf'hit",
   "SITE_URL": "https://graphit.fr",
+  "PODCAST_FOLDER": "./tests/",
   "AIRPLAY_FOLDER": "./tests/"
 }

@@ -10,6 +10,10 @@ function formatTime (mdate) {
   return date.getHours() + "h" + ('0' + date.getMinutes()).slice(-2);
 }
 
+function formatDate (mdate) {
+  return mdate.slice(6) + "/" + mdate.slice(4,6) + "/" + mdate.slice(0,4);
+}
+
 function twoDigitsNumber (s) { 
   return ("0" + s).slice(-2);
 }
