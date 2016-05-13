@@ -72,6 +72,11 @@ aside #nowPlaying select {
   margin-bottom: .5em;
 }
 
+
+aside .title-bar {
+  margin-bottom: 1em;
+}
+
 option, select {
   text-align: center;
 }
