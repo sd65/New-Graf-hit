@@ -10,11 +10,14 @@ body {
 section#content {
   background: rgba(255, 255, 255, 0.7);
   min-height: 100%; 
-  padding: 1em 2em 5em 2em;
+  padding: 1em 2em 4em 2em;
+}
+
+section#content h1, h2 {
+  color: #777;
 }
 
 section#content h1 {
-  color: #777;
   font-size: 3em;
 }
 
@@ -118,4 +121,12 @@ option, select {
 #player #progressRight {
   float: right;
   line-height: 50px;
+  margin-right: 1em;
+}
+
+#map {
+  margin-top: 16px;
+  width: 100%;
+  border : 1px solid #888; 
+  min-height: 300px;
 }
