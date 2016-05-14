@@ -109,7 +109,7 @@ function getLastProg (req, res) {
         return;
       }
       var lines = data.trim().split("\n");
-      var result = lines.slice(-number);
+      var result = lines.slice(-number).reverse();
       res.send(result);  
   });
 }

@@ -10,7 +10,7 @@ body {
 section#content {
   background: rgba(255, 255, 255, 0.7);
   min-height: 100%; 
-  padding: 1em 2em;
+  padding: 1em 2em 5em 2em;
 }
 
 section#content h1 {
@@ -85,7 +85,7 @@ option, select {
   bottom: 0px;
   width: 100%;
   left: 0px;
-  background: rgba(255, 255, 255, .7);
+  background: rgba(255, 255, 255, .85);
   border-top: #cacaca solid 1px;
 }
 
@@ -113,4 +113,9 @@ option, select {
 #player #progress {
   display: block;
   width: 100%;
+}
+
+#player #progressRight {
+  float: right;
+  line-height: 50px;
 }

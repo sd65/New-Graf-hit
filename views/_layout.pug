@@ -54,7 +54,10 @@ else
         img#playPause(src="/img/play.svg")
         img#cover(src="/img/logo.png")
         span#title Chargement...
-        progress#progress(value="0", style="display:none")
+        #progressRight
+         span#progressText
+          span.badge Live
+        progress#progress(style="display:none")
       audio#audio(preload)
         source(src=config.STREAM_URL, type="audio/mpeg")
 

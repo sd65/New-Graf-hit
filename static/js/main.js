@@ -40,6 +40,7 @@ $("aside a").click(function(event) {
       window.history.pushState({"pageTitle": newTitle, "html": html}, "", link);
       refreshActivePageInMenu();
       NProgress.done();
+      $('.title-bar').foundation('toggleMenu');
   });
 });
 window.onpopstate = function(e){
@@ -80,10 +81,8 @@ function refreshCurrentProg() {
     var html = "";
     $.each(progs, function(i, prog) {
       prog = removeSecFromProg(prog);
-      if(i==0) {
-        $("#player #title").text(prog.slice(5));
+      if(i==0)
         prog = "<b>" + prog + "</b>";
-      }
       html += "<li>" + prog + "</li>";
     });
     $("#lastFive").html(html);
@@ -146,19 +145,58 @@ $("#playPause").click(function(event) {
 });
 $("#audio").bind('timeupdate', function() {
   activeSong = document.getElementById("audio");
-  var percentageOfSong = (activeSong.currentTime/activeSong.duration);
-  if (percentageOfSong)
+  if (!live()) {
+    var percentageOfSong = (activeSong.currentTime/activeSong.duration);
+    var currentTime = formatSecondsAsTime(activeSong.currentTime)
+    var duration = formatSecondsAsTime(activeSong.duration)
+    $("#progressText").text(currentTime + "/" + duration);
     $("#progress").attr("value", percentageOfSong);
-  else {
-    $("#progress").attr("value", 100);
+  } else {
+    $("#progress").removeAttr("value");
+    $("#progressText").html("<span class='badge'>Live</span>");
   }
 });
+function live() {
+  activeSong = document.getElementById("audio");
+  if (isFinite(activeSong.duration))
+    return false;
+  return true;
+}
+function formatSecondsAsTime(secs) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600))/60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+  if (min < 10)
+    min = "0" + min; 
+  if (sec < 10)
+    sec  = "0" + sec;
+  return min + ':' + sec;
+}
+function refreshCurrentTitle() {
+  activeSong = document.getElementById("audio");
+  if (live()) {
+    $.ajax({
+      method: "POST",
+      url: "/get-programmation",
+      dataType: "json",
+      data : {
+        "action" : "last",
+        "number" : 1
+      }
+    }).done(function(prog) {
+      prog = removeSecFromProg(prog[0]);
+      $("#player #title").text(prog.slice(5));
+    }).fail(function(data) {
+      $("#player #title").text("Erreur");
+    });
+  }
+}
+refreshCurrentTitle();
+setInterval(refreshCurrentTitle, 2*1000);
 
 
 // Podcasts
-
 $("#podcast .thumbnail").click(function(event) {
-  console.log(0)
    activeSong = document.getElementById("audio");
    activeSong.src = $(this).data("file");
    $("#player #title").text($(this).data("title"))
