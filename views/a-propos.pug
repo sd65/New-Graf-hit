@@ -37,12 +37,23 @@ block content
     div.column.small-12.large-6
       #map
       script.
+        // Clear the previous obj if any
+        google = null;
         document.getElementById('map').style.height = (document.getElementById('target').clientHeight - 32) + "px";
         function initMap(){
+          var position = {lat: 49.415679, lng: 2.818218};
           var mapDiv = document.getElementById('map');
           var map = new google.maps.Map(mapDiv, {
-            center: {lat: 49.415, lng: 2.818},
+            center: position,
             zoom: 14
           });
+          var marker = new google.maps.Marker({
+            position: position,
+            map: map,
+          });
+         var infowindow = new google.maps.InfoWindow({
+            content: "<b>" + "#{config.SITE_TITLE}"  + "</b>"
+          });
+         infowindow.open(map,marker);
         }
-      script(src="https://maps.googleapis.com/maps/api/js?callback=initMap")
+      script(src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=" + config.GMAPS_API_KEY)

@@ -124,9 +124,35 @@ option, select {
   margin-right: 1em;
 }
 
+#player .badge {
+  font-size: 0.9rem;
+}
+
 #map {
   margin-top: 16px;
   width: 100%;
   border : 1px solid #888; 
   min-height: 300px;
+}
+
+@media screen and (max-width: 500px) {
+  #player #playPause {
+    width: 25px;
+  }
+  #player #title {
+    font-size: 14px;
+  }
+
+  #player #cover {
+    width: 30px;
+    height: 30px;
+  }
+
+  #player #progress {
+    height: 4px;
+  }
+
+  #player #progressRight {
+    display: none;
+  }
 }

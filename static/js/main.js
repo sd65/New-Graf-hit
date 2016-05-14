@@ -196,7 +196,8 @@ setInterval(refreshCurrentTitle, 2*1000);
 
 
 // Podcasts
-$("#podcast .thumbnail").click(function(event) {
+// Delegate the event to the main container
+$("#content").on("click", "#podcast .thumbnail", function () {
    activeSong = document.getElementById("audio");
    activeSong.src = $(this).data("file");
    $("#player #title").text($(this).data("title"))
