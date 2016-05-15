@@ -118,14 +118,42 @@ option, select {
   width: 100%;
 }
 
+#player #progressText {
+  padding-right: .6em;
+}
+
 #player #progressRight {
   float: right;
-  line-height: 50px;
   margin-right: 1em;
 }
 
 #player .badge {
   font-size: 0.9rem;
+}
+
+#player #playerMenu {
+  position: fixed;
+  right: 10px;
+  bottom: 65px;
+  top: unset !important;
+  left: unset !important;
+  padding: .5rem;
+  box-shadow: 4px 4px 6px #CECECE;
+}
+
+#player #playerMenu a {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#player #playerButton {
+  height: 50px;
+  padding: 0 3px;
+
+}
+
+#player #playerButton:hover {
+  background: #e4e4e4;
 }
 
 #map {
@@ -152,7 +180,11 @@ option, select {
     height: 4px;
   }
 
-  #player #progressRight {
+  #player #progressText {
     display: none;
+  }
+  
+  #player #playerButton {
+    height: 30px;
   }
 }

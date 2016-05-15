@@ -57,6 +57,10 @@ else
         #progressRight
          span#progressText
           span.badge Live
+         button#playerButton(data-toggle="playerMenu") ∴
+          .dropdown-pane#playerMenu(data-dropdown)
+            a.button.expanded Revenir au live
+            a.button.expanded Source du flux
         progress#progress(style="display:none")
       audio#audio(preload)
         source(src=config.STREAM_URL, type="audio/mpeg")
