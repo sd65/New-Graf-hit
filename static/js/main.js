@@ -205,3 +205,19 @@ $("#content").on("click", "#podcast .thumbnail", function () {
    activeSong.play();
    displayPlay(true);
 });
+
+
+//Player Menu
+$("#returnToLive").click(function(event) {
+   var streamLive = $("#audio source").data("streamurl");
+   activeSong.src = streamLive;
+   $("#player #title").text("Chargement...")
+   activeSong.load();
+   activeSong.play();
+   displayPlay(true);
+   $('#playerMenu').foundation("close");
+});
+$("#getStream").click(function(event) {
+   var stream = $("#audio source").attr("src");
+   window.location.href= stream;
+});

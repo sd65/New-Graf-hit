@@ -58,12 +58,12 @@ else
          span#progressText
           span.badge Live
          button#playerButton(data-toggle="playerMenu") ∴
-          .dropdown-pane#playerMenu(data-dropdown)
-            a.button.expanded Revenir au live
-            a.button.expanded Source du flux
+        .dropdown-pane#playerMenu(data-dropdown)
+          a.button.expanded#returnToLive Revenir au live
+          a.button.expanded#getStream Source du flux
         progress#progress(style="display:none")
-      audio#audio(preload)
-        source(src=config.STREAM_URL, type="audio/mpeg")
+        audio#audio(preload)
+          source(src=config.STREAM_URL, type="audio/mpeg", data-streamurl=config.STREAM_URL)
 
       #scripts
         script(src='/js/concat.js')
