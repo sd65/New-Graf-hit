@@ -49,11 +49,8 @@ app
   });
 })
 .get('/grille-des-programmes', function (req, res) {
-  func.getProg(req, res, function(progs) {
-    res.render('grille-des-programmes', { 
-      ajax: req.query.ajax,
-      progs: progs
-    });
+  res.render('grille-des-programmes', { 
+    ajax: req.query.ajax
   });
 })
 .get('/podcasts', function (req, res) {
@@ -72,6 +69,8 @@ app
       func.getLastProg(req, res);
     else if (req.body.action == "around")
       func.getAroundProg(req, res);
+    else if (req.body.action == "forWeek")
+      func.getProg(req, res);
     else 
       res.sendStatus(400);
 })
@@ -131,7 +130,7 @@ func.getLastProg = function (req, res) {
       res.send(result);  
   });
 }
-func.getProg = function (req, res, cb) {
+func.getProg = function (req, res) {
   var progs = [];
   file = "./tests/default_prog.csv";
   fs.readFile(file, 'utf-8', function(err, data) {
@@ -143,7 +142,7 @@ func.getProg = function (req, res, cb) {
       for (line of lines) {
         line = line.split(";");
         var prog = {};
-        prog.day = func.formatDate(line[0]);
+        prog.day = line[0];
         prog.hour = line[1];
         prog.duration = line[2];
         prog.name = line[3];
@@ -153,8 +152,7 @@ func.getProg = function (req, res, cb) {
         prog.cover = line[7];
         progs.push(prog);
       };
-      console.log(progs)
-      cb(progs);
+      res.send(progs);
   });
 }
 func.getActus = function(cb) {

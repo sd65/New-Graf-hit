@@ -11,6 +11,7 @@ else
       link(rel="icon", type="image/png", href="/img/logo.png")
       link(rel="stylesheet", href="/css/concat.css")
       link(rel="stylesheet", href="/css/main.css")
+      block plusCSS
     body
       aside.column.small-12.large-3
         p#intro
@@ -68,3 +69,4 @@ else
       #scripts
         script(src='/js/concat.js')
         script(src='/js/main.js')
+        block plusJS

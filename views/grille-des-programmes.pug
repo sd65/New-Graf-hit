@@ -1,30 +1,61 @@
 extends _layout.pug
 
+block plusJS
+  script(src="/js/dist/moment.min.js")
+  script(src="/js/dist/fullcalendar.min.js")
+
+block plusCSS
+  link(rel="stylesheet", href="/css/dist/fullcalendar.min.css")
+
 block vars
   - var pageTitle="Grille des programmes"
 
 block content
   block contentAjax
-    p Grille des programmes
-    table
-      thead
-        tr
-          td
-          td lundi
-          td mardi
-          td mercredi
-          td jeudi
-          td vendredi
-          td samedi
-          td dimanche
-      tbody
-        - for(i=0; i<24; i++)
-          tr
-            td= func.twoDigitsNumber(i) + ":00"
-            td 
-            td 
-            td 
-            td 
-            td 
-            td 
-            td 
+    h1 Grille des programmes
+    #calendar
+    script.
+      window.onload = function() {
+        $('#calendar').fullCalendar({
+          defaultView: "agendaWeek",
+          lang: "fr",
+          allDaySlot: false,
+          contentHeight: "auto",
+          eventColor: "#777777",
+          slotLabelFormat: "HH:mm",
+          buttonText: { 
+            today: "Aujourd'hui"
+          },
+          columnFormat: "dddd",
+          displayEventTime: false,
+          eventRender: function(event, element) {
+            element.find('.fc-title').append("<br/>" + event.details); 
+          },
+          viewRender: function( view, element ) {
+            var weekNumber = view.start.format('w');
+            $.ajax({
+              method: "POST",
+              url: "/get-programmation",
+              dataType: "json",
+              data : {
+                "action" : "forWeek",
+                "number" : weekNumber
+              }
+            }).done(function(progs) {
+              for (prog of progs) {
+                var start = moment(prog.day + prog.hour, "YYYYMMDDHH:mm");
+                var end = start.add(prog.duration, "minutes");
+                $("#calendar").fullCalendar( 'renderEvent', { 
+                  "title": prog.name, 
+                  "start" : start,
+                  "end" : end,
+                  "details": prog.details
+                })
+              }
+            });
+          }
+        })
+      }
+
+      
+    
