@@ -153,8 +153,10 @@ $("#audio").bind('timeupdate', function() {
   }
 });
 $("#progress").click(function(event) {
-  var percent = event.offsetX / this.offsetWidth;
-  activeSong.currentTime = percent * activeSong.duration;
+  if(!live()) {
+    var percent = event.offsetX / this.offsetWidth;
+    activeSong.currentTime = percent * activeSong.duration;
+  }
 });
 function live() {
   if (isFinite(activeSong.duration))

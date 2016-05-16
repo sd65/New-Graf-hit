@@ -8,7 +8,7 @@ block content
     h1 Nos podcasts
     p.lead Voici la liste des émissions disponibles au téléchargement :
     - // Magic to extract unique categories
-    - var categories = [...new Set(podcasts.map(item => item.category))] 
+    - var categories = Array.from(new Set(podcasts.map(item => item.category)))
     each category in categories
       h2= category
       each podcast in podcasts

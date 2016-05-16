@@ -5,4 +5,26 @@ block vars
 
 block content
   block contentAjax
-    p A propos de nous.
+    p Grille des programmes
+    table
+      thead
+        tr
+          td
+          td lundi
+          td mardi
+          td mercredi
+          td jeudi
+          td vendredi
+          td samedi
+          td dimanche
+      tbody
+        - for(i=0; i<24; i++)
+          tr
+            td= func.twoDigitsNumber(i) + ":00"
+            td 
+            td 
+            td 
+            td 
+            td 
+            td 
+            td 

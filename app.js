@@ -49,7 +49,12 @@ app
   });
 })
 .get('/grille-des-programmes', function (req, res) {
-    res.render('grille-des-programmes', { ajax: req.query.ajax } );
+  func.getProg(req, res, function(progs) {
+    res.render('grille-des-programmes', { 
+      ajax: req.query.ajax,
+      progs: progs
+    });
+  });
 })
 .get('/podcasts', function (req, res) {
   func.getPodcasts(function(podcasts) {
@@ -124,6 +129,32 @@ func.getLastProg = function (req, res) {
       var lines = data.trim().split("\n");
       var result = lines.slice(-number).reverse();
       res.send(result);  
+  });
+}
+func.getProg = function (req, res, cb) {
+  var progs = [];
+  file = "./tests/default_prog.csv";
+  fs.readFile(file, 'utf-8', function(err, data) {
+      if (err) {
+        res.sendStatus(500);
+        return;
+      }
+      var lines = data.trim().split("\n");
+      for (line of lines) {
+        line = line.split(";");
+        var prog = {};
+        prog.day = func.formatDate(line[0]);
+        prog.hour = line[1];
+        prog.duration = line[2];
+        prog.name = line[3];
+        prog.details = line[4];
+        prog.podcastLink = line[5];
+        prog.link = line[6];
+        prog.cover = line[7];
+        progs.push(prog);
+      };
+      console.log(progs)
+      cb(progs);
   });
 }
 func.getActus = function(cb) {
