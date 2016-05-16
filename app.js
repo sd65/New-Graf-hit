@@ -1,12 +1,16 @@
 // Init modules
 var fs = require("fs");
 var mysql = require("mysql")
+var moment = require('moment');
 var express = require("express");
 var compress = require('compression');
 var bodyParser = require("body-parser");
 
 // Express is up
 var app = express();
+
+// Moment with date locale in Fr
+moment.locale('fr');
 
 // Config
 var config = app.locals.config = require('./config/config.json');
@@ -113,7 +117,7 @@ func.getPodcasts = function (cb) {
           var category = file.split("_")[1]; 
           var podcast = {};
           podcast.file = config.PODCAST.URL + file;
-          podcast.date = date;
+          podcast.date = moment(date, "YYYYMMDD").format("Do MMMM YYYY");
           podcast.originalCategory = category;
           podcast.category = beautifulNames[category] || category;
           podcasts.push(podcast);
@@ -125,10 +129,8 @@ func.getPodcasts = function (cb) {
 }
 func.getLastProg = function (req, res) {
   var number = req.body.number || 1;
-  var d = new Date();
-  var file = d.getFullYear() + "-";
-  file += func.twoDigitsNumber(d.getMonth()+1) + "-";
-  file += d.getDate() + "_airplay.log";
+  var file = moment().format("YYYY-MM-DD");
+  file += "_airplay.log";
   file = config.AIRPLAY_FOLDER + file;
   fs.readFile(file, 'utf-8', function(err, data) {
       if (err) {
@@ -191,27 +193,18 @@ func.getAroundProg = function (req, res) {
   var hour = req.body.hour;
   if (!date || !hour) res.sendStatus(400);
   else {
-    var day = date.split("/")[0];
-    var month = date.split("/")[1];
-    var d = new Date();
-    var file = d.getFullYear() + "-";
-    file += month + "-" + day + "_airplay.log";
+    var file = moment(date, "DD/MM").format("YYYY-MM-DD");
+    file += "_airplay.log";
     file = config.AIRPLAY_FOLDER + file;
     fs.readFile(file, 'utf-8', function(err, data) {
         if (err) {
           res.sendStatus(404);
           return;
         }
-        var hours = hour.split(":")[0];
-        var minutes = hour.split(":")[1];
         var gap = 7;
-        var d = new Date();
-        d.setHours(hours);
-        d.setMinutes(minutes);
-        d.setSeconds(d.getSeconds() - gap*60);
-        numberSearchMin = parseInt("" + d.getHours() + func.twoDigitsNumber(d.getMinutes()));
-        d.setSeconds(d.getSeconds() + gap*2*60);
-        numberSearchMax = parseInt("" + d.getHours() + func.twoDigitsNumber(d.getMinutes()));
+        var h = moment(hour, "HH:mm");
+        var numberSearchMin = moment(h).subtract(gap, "minutes").format("HHmm");
+        var numberSearchMax = moment(h).add(gap, "minutes").format("HHmm");
         var results = [];
         var lines = data.trim().split("\n");
         lines.forEach(function (line) {
@@ -223,14 +216,9 @@ func.getAroundProg = function (req, res) {
     });
   }
 },
-func.formatDate = function (mdate) {
-  return mdate.slice(6) + "/" + mdate.slice(4,6) + "/" + mdate.slice(0,4);
-}
 func.returnRelativeDate = function(i) {
   if (!i) var i = 0;
-    var d = new Date();
-    d.setSeconds(d.getSeconds() - 3600*24*i);
-    return d.getDate() + "/" + func.twoDigitsNumber(d.getMonth()+1); 
+    return moment().subtract(i, "days").format("DD/MM");
 }
 func.twoDigitsNumber = function (s) { 
   return ("0" + s).slice(-2);

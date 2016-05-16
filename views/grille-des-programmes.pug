@@ -9,48 +9,52 @@ block content
     h1 Grille des programmes
     #calendar
     script.
-      function domReady() {
-        $('#calendar').fullCalendar({
-          defaultView: "agendaWeek",
-          lang: "fr",
-          allDaySlot: false,
-          contentHeight: "auto",
-          eventColor: "#777777",
-          slotLabelFormat: "HH:mm",
-          buttonText: { 
-            today: "Aujourd'hui"
-          },
-          columnFormat: "dddd",
-          displayEventTime: false,
-          timezone: false,
-          eventRender: function(event, element) {
-            element.find('.fc-title').append("<br/>" + event.details); 
-          },
-          viewRender: function( view, element ) {
-            var weekNumber = view.start.format('w');
-            $.ajax({
-              method: "POST",
-              url: "/get-programmation",
-              dataType: "json",
-              data : {
-                "action" : "forWeek",
-                "number" : weekNumber
-              }
-            }).done(function(progs) {
-              for (prog of progs) {
-                var start = moment(prog.day + prog.hour, "YYYYMMDDHH:mm");
-                var end = moment(start).add(prog.duration, "minutes");
-                $("#calendar").fullCalendar( 'renderEvent', { 
-                  "title": prog.name, 
-                  "start" : start,
-                  "end" : end,
-                  "details": prog.details
-                })
-              }
-            });
-          }
-        })
-      }
+      // Call func if first page loaded and DOM ready
+      document.addEventListener('DOMContentLoaded', displayTable);
+      // Or now id JQuery is here
+      if (window.jQuery) displayTable();
+      function displayTable() {
+          $('#calendar').fullCalendar({
+            defaultView: "agendaWeek",
+            lang: "fr",
+            allDaySlot: false,
+            contentHeight: "auto",
+            eventColor: "#777777",
+            slotLabelFormat: "HH:mm",
+            buttonText: { 
+              today: "Aujourd'hui"
+            },
+            columnFormat: "dddd",
+            displayEventTime: false,
+            timezone: false,
+            eventRender: function(event, element) {
+              element.find('.fc-title').append("<br/>" + event.details); 
+            },
+            viewRender: function( view, element ) {
+              var weekNumber = view.start.format('w');
+              $.ajax({
+                method: "POST",
+                url: "/get-programmation",
+                dataType: "json",
+                data : {
+                  "action" : "forWeek",
+                  "number" : weekNumber
+                }
+              }).done(function(progs) {
+                for (prog of progs) {
+                  var start = moment(prog.day + prog.hour, "YYYYMMDDHH:mm");
+                  var end = moment(start).add(prog.duration, "minutes");
+                  $("#calendar").fullCalendar( 'renderEvent', { 
+                    "title": prog.name, 
+                    "start" : start,
+                    "end" : end,
+                    "details": prog.details
+                  })
+                }
+              });
+            }
+          })
+        };
 
       
     

@@ -3,11 +3,6 @@
 // Foundation init
 $(document).foundation();
 
-// Dom is ready
-if (typeof domReady == 'function') { 
-    domReady(); 
-}
-
 // Dynamic colors
 function setDynamicColors(nb) {
   if(!nb) {
@@ -48,7 +43,6 @@ $("aside a").click(function(event) {
       refreshActivePageInMenu();
       NProgress.done();
       $('.title-bar').foundation('toggleMenu');
-      domReady();
   });
 });
 window.onpopstate = function(e){
@@ -67,13 +61,11 @@ function refreshActivePageInMenu() {
 }
 refreshActivePageInMenu();
 
-
 // Set defaults select options in menu
-var selector = "#searchDate option[value='" + returnDate() + "']";
+var selector = "#searchDate option[value='" + moment().format("DD/MM") + "']";
 $(selector).attr("selected", "selected").text("Aujourd'hui");
-selector = "#searchHour option[value^='" + (new Date).getHours() + "']";
+selector = "#searchHour option[value^='" + moment().format("HH") + "']";
 $(selector).first().attr("selected", "selected");
-
 
 // Set last 5 progs
 function refreshCurrentProg() {
@@ -101,7 +93,6 @@ function refreshCurrentProg() {
 refreshCurrentProg();
 setInterval(refreshCurrentProg, 15*1000);
 
-
 // Search
 $("#search").click(function(event) {
   $("#searchResults").html("");
@@ -128,7 +119,6 @@ $("#search").click(function(event) {
     $("#searchResults").text("Erreur.");
   });
 });
-
 
 // Player
 var activeSong = document.getElementById("audio");
@@ -181,8 +171,7 @@ function refreshCurrentTitle() {
         "number" : 1
       }
     }).done(function(prog) {
-      prog = removeSecFromProg(prog[0]);
-      prog = removeTimeFromProg(prog);
+      prog = prog[0].slice(9);
       $("#player #title").text(prog);
     }).fail(function(data) {
       $("#player #title").text("Erreur");
@@ -211,10 +200,9 @@ $("#getStream").click(function(event) {
 });
 // On any error, reload live
 $("#audio").on("error", function (e) {
-  alert("Il y a une erreur sur la lecture en cours, nous rechargeons le live");
+  console.log("Il y a une erreur sur la lecture en cours, nous rechargeons le live");
   returnToLive();
 });
-
 
 // Podcasts
 // Delegate the event to the main container
@@ -230,24 +218,9 @@ $("#content").on("click", "#podcast .thumbnail", function () {
 // Prevent drag img
 $("img").mousedown( function(e) { e.preventDefault() } ); // fix for IE
 
-
 // Utils Functions
-function twoDigitsNumber (s) { 
-  return ("0" + s).slice(-2);
-}
-function returnDate () {
-  var d = new Date();
-  d.setSeconds(d.getSeconds() - 3600*24);
-  return d.getDate() + "/" + ("0" + (d.getMonth()+1)).slice(-2); 
-}
 function formatSecondsAsTime(secs) {
-  var hr  = Math.floor(secs / 3600);
-  var min = Math.floor((secs - (hr * 3600))/60);
-  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
-  return twoDigitsNumber(min) + ':' + twoDigitsNumber(sec);
-}
-function removeTimeFromProg (s) {
-  return s.slice(5);
+  return moment("0000", "HHmm").add(secs, "seconds").format("HH:mm");
 }
 function removeSecFromProg(s) {
   return s.slice(0,5) + s.slice(8);
