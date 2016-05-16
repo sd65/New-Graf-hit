@@ -68,14 +68,14 @@ function refreshActivePageInMenu() {
 refreshActivePageInMenu();
 
 
-// Set defaults select in menu
+// Set defaults select options in menu
 var selector = "#searchDate option[value='" + returnDate() + "']";
 $(selector).attr("selected", "selected").text("Aujourd'hui");
 selector = "#searchHour option[value^='" + (new Date).getHours() + "']";
 $(selector).first().attr("selected", "selected");
 
 
-// Set last 5
+// Set last 5 progs
 function refreshCurrentProg() {
   $.ajax({
     method: "POST",

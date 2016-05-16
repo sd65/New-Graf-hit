@@ -11,6 +11,7 @@
   },
   "AIRPLAY_FOLDER": "./tests/",
   "LINKNAMES_FILE": "./config/linkNames.txt",
+  "PROG_FOLDER": "./tests/",
   "GMAPS_API_KEY": "AIzaSyDPPeWxV7INWCL3RYyzSTLwnIcbS9yuBjY",
   "MYSQL" : {
     "HOST" : "xxx.xxx.xxx.xxx",

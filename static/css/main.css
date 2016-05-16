@@ -1,13 +1,13 @@
+body {
+  background: url("/img/bg.png") no-repeat, url("/img/bg2.png") repeat;
+}
+
 #logo {
   display: block;
   width: 100%;
   margin: 0px auto 5px;
   max-width: 325px;
   padding-bottom: 4px;
-}
-
-body {
-  background: url("/img/bg.png") no-repeat, url("/img/bg2.png") repeat;
 }
 
 section#content {
@@ -77,6 +77,9 @@ aside #nowPlaying select {
   margin-bottom: .5em;
 }
 
+aside ul#searchResults {
+  margin-bottom: 7em;
+}
 
 aside .title-bar {
   margin-bottom: 1em;
@@ -168,6 +171,27 @@ option, select {
   min-height: 300px;
 }
 
+#calendar tr, #calendar tr.fc-minor, #calendar thead {  
+    background: #fbfbfb;
+}
+
+#calendar table {
+  margin: 0;
+}
+
+.fc-event {
+  border: none;
+  border-radius: 0;
+}
+
+.fc-view {
+  min-width: 700px
+}
+
+.fc-title {
+  text-align: center;
+}
+
 @media screen and (max-width: 500px) {
   #player #playPause {
     width: 25px;
@@ -192,27 +216,4 @@ option, select {
   #player #playerButton {
     height: 30px;
   }
-}
-
-/* Fix */
-
-#calendar tr, #calendar tr.fc-minor, #calendar thead {  
-    background: #fbfbfb;
-}
-
-#calendar table {
-  margin: 0;
-}
-
-.fc-event {
-  border: none;
-  border-radius: 0;
-}
-
-.fc-view {
-  min-width: 700px
-}
-
-.fc-title {
-  text-align: center;
 }

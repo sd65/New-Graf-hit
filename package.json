@@ -1,11 +1,8 @@
 {
   "name": "new-grah-hit",
   "version": "1.0.0",
-  "description": "Revamped the website",
+  "description": "Graf'hit on steroids !",
   "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sd65/New-Graf-hit.git"
@@ -21,6 +18,6 @@
     "compression": "^1.6.2",
     "express": "^4.13.4",
     "mysql": "^2.10.2",
-    "pug": "^2.0.0-alpha6"
+    "pug": "^2.0.0-alpha7"
   }
 }

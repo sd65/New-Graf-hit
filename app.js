@@ -4,34 +4,35 @@ var mysql = require("mysql")
 var express = require("express");
 var compress = require('compression');
 var bodyParser = require("body-parser");
+
+// Express is up
 var app = express();
 
-// Config (definied in package.json)
-app.locals.config = require('./config/config.json');
-var config = app.locals.config;
+// Config
+var config = app.locals.config = require('./config/config.json');
 
 // Functions
 var func = {} // Later defined
 app.locals.func = func;
 
-// GZip
+// Compress assets using GZip
 app.use(compress());  
 
-// Public dir
+// Serve public dir with cache activated
 app.use(express.static("static", {
     maxage: "365d"
 }))
 
-// Use Pug template
+// Use Pug as template
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
 
-// Parse JSON in POST
+// Parse JSON in POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// MySQL
+// MySQL init
 var coMysql = mysql.createConnection({
   host : config.MYSQL.HOST,
   user : config.MYSQL.USER,
@@ -39,10 +40,8 @@ var coMysql = mysql.createConnection({
   database : config.MYSQL.DB
 });
 coMysql.connect(function(err) {
-  if (err) {
+  if (err)
     console.error("Erreur lors de la connexion à la base MYSQL.");
-    return;
-  }
 });
 
 // Define routes
@@ -69,7 +68,9 @@ app
   });
 })
 .get('/a-propos', function (req, res) {
-    res.render('a-propos', { ajax: req.query.ajax } );
+  res.render('a-propos', { 
+    ajax: req.query.ajax 
+  });
 })
 .post('/get-programmation', function (req, res) {
     if (req.body.action == "last")
@@ -82,6 +83,7 @@ app
       res.sendStatus(400);
 })
 .all('*', function(req, res){
+    // If no route catch up -> 404
     res.render('404');
 });
 
@@ -92,6 +94,7 @@ app.listen(config.PORT, function () {
 
 /////////////
 // Functions
+
 func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
@@ -139,7 +142,7 @@ func.getLastProg = function (req, res) {
 }
 func.getProg = function (req, res) {
   var progs = [];
-  file = "./tests/default_prog.csv";
+  file = config.PROG_FOLDER + "default_prog.csv";
   fs.readFile(file, 'utf-8', function(err, data) {
       if (err) {
         res.sendStatus(500);
