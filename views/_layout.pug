@@ -17,7 +17,7 @@ else
           a(href="/")
             img#logo(src="/img/logo_full.png")
           | Est une radio de découvertes musicales basée à Compiègne.
-          | Vous pouvez nous écouter en FM sur le 94.9MHz et en streaming sur cette page.
+          | Vous pouvez nous écouter en FM sur le <em>94.9MHz</em> et en streaming sur cette page.
         .title-bar(data-responsive-toggle="main-menu", data-hide-for="large")
           button.menu-icon(type=button, data-toggle)
           .title-bar-title Menu
@@ -38,11 +38,11 @@ else
                 select#searchDate.column.large-6
                   - for (var i = 0; i < 15; i++)
                     - var date = func.returnRelativeDate(i)
-                      option(value=date)= date
+                      option(value=date[0])= date[1]
                 select#searchHour.column.large-6
                  - for (var h = 0; h < 24; h++)
                    - for (var m = 0; m < 60; m+=5)
-                    - var min = func.twoDigitsNumber(m)
+                    - var min = ("0" + m).slice(-2)
                     - var heure = h + ":" + min
                     option(value=heure) #{heure}
                 button#search.button.expanded.secondary Rechercher
@@ -57,10 +57,10 @@ else
         #progressRight
          span#progressText
           span.badge Live
-         button#playerButton(data-toggle="playerMenu") ∴
+         button#playerButton(data-toggle="playerMenu") ☰
         .dropdown-pane#playerMenu(data-dropdown)
-          a.button.expanded#returnToLive Revenir au live
-          a.button.expanded#getStream Source du flux
+          a.button.expanded.hollow#returnToLive Revenir au live
+          a.button.expanded.hollow#getStream Source du flux
         progress#progress(style="display:none")
         audio#audio.hide(preload)
           source(src=config.STREAM_URL, type="audio/mpeg", data-streamurl=config.STREAM_URL)

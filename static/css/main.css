@@ -73,6 +73,10 @@ ul, ul ul {
   margin-left: 0;
 }
 
+h5.pTitle {
+  margin-bottom: 0;
+}
+
 aside #nowPlaying select {
   margin-bottom: .5em;
 }

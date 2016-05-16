@@ -217,9 +217,9 @@ func.getAroundProg = function (req, res) {
   }
 },
 func.returnRelativeDate = function(i) {
-  if (!i) var i = 0;
-    return moment().subtract(i, "days").format("DD/MM");
-}
-func.twoDigitsNumber = function (s) { 
-  return ("0" + s).slice(-2);
+  if (!i) 
+    var i = 0;
+  var date = moment().subtract(i, "days").format("DD/MM");
+  var humanDate = moment().subtract(i, "days").format("dddd Do MMMM");
+  return [date, humanDate];
 }
