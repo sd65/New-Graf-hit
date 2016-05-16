@@ -9,9 +9,9 @@ else
       title #{config.SITE.TITLE} | #{pageTitle}
       meta(name='viewport', content="width=device-width,initial-scale=1.0")
       link(rel="icon", type="image/png", href="/img/logo.png")
+      block plusCSS
       link(rel="stylesheet", href="/css/concat.css")
       link(rel="stylesheet", href="/css/main.css")
-      block plusCSS
     body
       aside.column.small-12.large-3
         p#intro

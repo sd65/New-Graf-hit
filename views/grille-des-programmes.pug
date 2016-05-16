@@ -28,6 +28,7 @@ block content
           },
           columnFormat: "dddd",
           displayEventTime: false,
+          timezone: false,
           eventRender: function(event, element) {
             element.find('.fc-title').append("<br/>" + event.details); 
           },
@@ -44,7 +45,7 @@ block content
             }).done(function(progs) {
               for (prog of progs) {
                 var start = moment(prog.day + prog.hour, "YYYYMMDDHH:mm");
-                var end = start.add(prog.duration, "minutes");
+                var end = moment(start).add(prog.duration, "minutes");
                 $("#calendar").fullCalendar( 'renderEvent', { 
                   "title": prog.name, 
                   "start" : start,

@@ -203,3 +203,8 @@ table#calendar {
 #calendar tr, tr.fc-minor, thead {  
     background: initial;
 }
+
+.fc-event {
+  border: none;
+  border-radius: 0;
+}
