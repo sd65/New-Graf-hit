@@ -195,16 +195,24 @@ option, select {
 }
 
 /* Fix */
-table#calendar {  
-    background-color: transparent;
-      margin-bottom: 0;
+
+#calendar tr, #calendar tr.fc-minor, #calendar thead {  
+    background: #fbfbfb;
 }
 
-#calendar tr, tr.fc-minor, thead {  
-    background: initial;
+#calendar table {
+  margin: 0;
 }
 
 .fc-event {
   border: none;
   border-radius: 0;
+}
+
+.fc-view {
+  min-width: 700px
+}
+
+.fc-title {
+  text-align: center;
 }

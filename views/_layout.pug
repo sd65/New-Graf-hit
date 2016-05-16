@@ -9,7 +9,6 @@ else
       title #{config.SITE.TITLE} | #{pageTitle}
       meta(name='viewport', content="width=device-width,initial-scale=1.0")
       link(rel="icon", type="image/png", href="/img/logo.png")
-      block plusCSS
       link(rel="stylesheet", href="/css/concat.css")
       link(rel="stylesheet", href="/css/main.css")
     body
@@ -63,10 +62,9 @@ else
           a.button.expanded#returnToLive Revenir au live
           a.button.expanded#getStream Source du flux
         progress#progress(style="display:none")
-        audio#audio.hide(preload)
+        audio#audio.hide
           source(src=config.STREAM_URL, type="audio/mpeg", data-streamurl=config.STREAM_URL)
 
       #scripts
         script(src='/js/concat.js')
         script(src='/js/main.js')
-        block plusJS

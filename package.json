@@ -18,6 +18,7 @@
   "homepage": "https://github.com/sd65/New-Graf-hit#readme",
   "dependencies": {
     "body-parser": "^1.15.1",
+    "compression": "^1.6.2",
     "express": "^4.13.4",
     "mysql": "^2.10.2",
     "pug": "^2.0.0-alpha6"

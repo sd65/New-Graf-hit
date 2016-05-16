@@ -2,6 +2,7 @@
 var fs = require("fs");
 var mysql = require("mysql")
 var express = require("express");
+var compress = require('compression');
 var bodyParser = require("body-parser");
 var app = express();
 
@@ -13,12 +14,18 @@ var config = app.locals.config;
 var func = {} // Later defined
 app.locals.func = func;
 
+// GZip
+app.use(compress());  
+
 // Public dir
-app.use(express.static('static'));
+app.use(express.static("static", {
+    maxage: "365d"
+}))
 
 // Use Pug template
 app.set('view engine', 'pug');
 app.set('views', 'views');
+
 
 // Parse JSON in POST
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -156,14 +163,12 @@ func.getProg = function (req, res) {
   });
 }
 func.getActus = function(cb) {
-  //var query = 'SELECT title, startDate, endDate, content, author, status, ordre FROM posts ORDER BY ordre DESC';
+  //var query = SELECT title, startDate, endDate, content, author, status, ordre FROM posts WHERE CURDATE()<= ADDDATE(endDate,6) ORDER BY ordre ASC LIMIT 10
   var query = 'SELECT title, startDate, endDate, content, author, status FROM posts';
   var actus = [];
   coMysql.query(query, function (error, results, fields) {
-    if (error) {
-      coMysql.end();
+    if (error)
       return;
-    }
     for (var i in results){
       var actu = {};
       actu.title = results[i].title;
@@ -175,7 +180,6 @@ func.getActus = function(cb) {
       //actu.ordre = results[i].ordre;
       actus.push(actu);   
     }
-    coMysql.end();
     cb(actus);
   });
 }

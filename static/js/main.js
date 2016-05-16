@@ -3,6 +3,11 @@
 // Foundation init
 $(document).foundation();
 
+// Dom is ready
+if (typeof domReady == 'function') { 
+    domReady(); 
+}
+
 // Dynamic colors
 function setDynamicColors(nb) {
   if(!nb) {
@@ -43,6 +48,7 @@ $("aside a").click(function(event) {
       refreshActivePageInMenu();
       NProgress.done();
       $('.title-bar').foundation('toggleMenu');
+      domReady();
   });
 });
 window.onpopstate = function(e){

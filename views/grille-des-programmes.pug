@@ -1,11 +1,5 @@
 extends _layout.pug
 
-block plusJS
-  script(src="/js/dist/moment.min.js")
-  script(src="/js/dist/fullcalendar.min.js")
-
-block plusCSS
-  link(rel="stylesheet", href="/css/dist/fullcalendar.min.css")
 
 block vars
   - var pageTitle="Grille des programmes"
@@ -15,7 +9,7 @@ block content
     h1 Grille des programmes
     #calendar
     script.
-      window.onload = function() {
+      function domReady() {
         $('#calendar').fullCalendar({
           defaultView: "agendaWeek",
           lang: "fr",
