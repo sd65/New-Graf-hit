@@ -31,7 +31,6 @@ app.use(express.static("static", {
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
-
 // Parse JSON in POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -47,6 +46,9 @@ coMysql.connect(function(err) {
   if (err)
     console.error("Erreur lors de la connexion à la base MYSQL.");
 });
+
+// My super cache
+var cache = [];
 
 // Define routes
 app
@@ -102,7 +104,7 @@ app.listen(config.PORT, function () {
 func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
-  fs.readFile(file, 'utf-8', function(err, data) {
+  func.myReadPath(file, "file", function(err, data) {
     var lines = data.trim().split("\n");
     for (line of lines) {
       var originalName = line.split(":")[0];
@@ -110,7 +112,7 @@ func.getPodcasts = function (cb) {
       beautifulNames[originalName] = beautifulName;
     };
     var podcasts = [];
-    fs.readdir(config.PODCAST.FOLDER, function(err, files) {
+    func.myReadPath(config.PODCAST.FOLDER, "dir", function(err, files) {
       files.forEach(function (file) {
         if (file.substr(-4) == ".mp3") {
           var date = file.split("_")[0]; 
@@ -132,7 +134,7 @@ func.getLastProg = function (req, res) {
   var file = moment().format("YYYY-MM-DD");
   file += "_airplay.log";
   file = config.AIRPLAY_FOLDER + file;
-  fs.readFile(file, 'utf-8', function(err, data) {
+  func.myReadPath(file, "file", function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
@@ -215,11 +217,31 @@ func.getAroundProg = function (req, res) {
         res.send(JSON.stringify(results));  
     });
   }
-},
+}
 func.returnRelativeDate = function(i) {
   if (!i) 
     var i = 0;
   var date = moment().subtract(i, "days").format("DD/MM");
   var humanDate = moment().subtract(i, "days").format("dddd Do MMMM");
   return [date, humanDate];
+}
+func.myReadPath = function (path, type, cb) {
+  if (path in cache) {
+    console.log("hit for " + path);
+    cb(null, cache[path]);
+  } else {
+    var cb2 = function(err, data) {
+      if (err) 
+        cb(err)
+      else {
+        console.log("NOW IN CACHE " + path);
+        cache[path] = data;
+        cb(null, cache[path]);
+      }
+    }
+    if (type === "file")
+      fs.readFile(path, 'utf-8', cb2);
+    else
+      fs.readdir(path, cb2);
+  }
 }
