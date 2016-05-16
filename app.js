@@ -1,5 +1,6 @@
 // Init modules
 var fs = require("fs");
+var mysql = require("mysql")
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
@@ -23,10 +24,30 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// MySQL
+var coMysql = mysql.createConnection({
+  host : config.MYSQL.HOST,
+  user : config.MYSQL.USER,
+  password : config.MYSQL.PASSWORD,
+  database : config.MYSQL.DB
+});
+coMysql.connect(function(err) {
+  if (err) {
+    console.error("Erreur lors de la connexion à la base MYSQL.");
+    return;
+  }
+});
+
 // Define routes
 app
 .get('/', function (req, res) {
-    res.render('index', { ajax: req.query.ajax } );
+  var actus = func.getActus(function(actus) {
+    console.log(actus)
+    res.render('index', { 
+      ajax: req.query.ajax,
+      actus : actus
+    });
+  });
 })
 .get('/grille-des-programmes', function (req, res) {
     res.render('grille-des-programmes', { ajax: req.query.ajax } );
@@ -55,7 +76,7 @@ app
 
 // Launch the server
 app.listen(config.PORT, function () {
-  console.log(config.SITE_TITLE + " listening on port : " + config.PORT);
+  console.log(config.SITE.TITLE + " listening on port : " + config.PORT);
 });
 
 /////////////
@@ -71,13 +92,13 @@ func.getPodcasts = function () {
     beautifulNames[originalName] = beautifulName;
   };
   var podcasts = [];
-  var files = fs.readdirSync(config.PODCAST_FOLDER);
+  var files = fs.readdirSync(config.PODCAST.FOLDER);
   files.forEach(function (file) {
     if (file.substr(-4) == ".mp3") {
       var date = file.split("_")[0]; 
       var category = file.split("_")[1]; 
       var podcast = {};
-      podcast.file = config.PODCAST_URL + file;
+      podcast.file = config.PODCAST.URL + file;
       podcast.date = date;
       podcast.originalCategory = category;
       podcast.category = beautifulNames[category] || category;
@@ -101,6 +122,30 @@ func.getLastProg = function (req, res) {
       var lines = data.trim().split("\n");
       var result = lines.slice(-number).reverse();
       res.send(result);  
+  });
+}
+func.getActus = function(cb) {
+  //var query = 'SELECT title, startDate, endDate, content, author, status, ordre FROM posts ORDER BY ordre DESC';
+  var query = 'SELECT title, startDate, endDate, content, author, status FROM posts';
+  var actus = [];
+  coMysql.query(query, function (error, results, fields) {
+    if (error) {
+      coMysql.end();
+      return;
+    }
+    for (var i in results){
+      var actu = {};
+      actu.title = results[i].title;
+      actu.startDate = results[i].startDate;
+      actu.endDate = results[i].endDate;
+      actu.content = results[i].content;
+      actu.author = results[i].author;
+      actu.status = results[i].status;
+      //actu.ordre = results[i].ordre;
+      actus.push(actu);   
+    }
+    coMysql.end();
+    cb(actus);
   });
 }
 func.getAroundProg = function (req, res) {

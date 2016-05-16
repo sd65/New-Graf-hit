@@ -15,6 +15,7 @@ block content
         p Really 
 
     h1 Actualités
-    .callout
-      h5 Titre news
-      p When using the data-closable attribute, you can optionally add Motion UI classes to the attribute to change the closing animation. If no class is added, the plugin defaults to jQuery's .fadeOut() function.
+    each actu in actus
+      .callout
+        h5= actu.title
+        p When using the data-closable attribute, you can optionally add Motion UI classes to the attribute to change the closing animation. If no class is added, the plugin defaults to jQuery's .fadeOut() function.

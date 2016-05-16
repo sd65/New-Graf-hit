@@ -1,0 +1,21 @@
+{
+  "PORT": 8080,
+  "SITE" : {
+    "TITLE": "Graf'hit",
+    "URL": "https://graphit.fr"
+  },
+  "STREAM_URL": "http://213.246.53.78:8000/grafhit.mp3",
+  "PODCAST" : {
+    "FOLDER": "./tests/",
+    "URL": "http://podcast.grafhit.net/"
+  },
+  "AIRPLAY_FOLDER": "./tests/",
+  "LINKNAMES_FILE": "./config/linkNames.txt",
+  "GMAPS_API_KEY": "AIzaSyDPPeWxV7INWCL3RYyzSTLwnIcbS9yuBjY",
+  "MYSQL" : {
+    "HOST" : "xxx.xxx.xxx.xxx",
+    "USER" : "root",
+    "PASSWORD" : "root",
+    "DB" : "db"
+  }
+}
