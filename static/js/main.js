@@ -1,3 +1,5 @@
+"use strict";
+
 // Foundation init
 $(document).foundation();
 
@@ -5,13 +7,13 @@ $(document).foundation();
 function setDynamicColors(nb) {
   if(!nb) {
     var d = new Date();
-    var nb = d.getDate() + (d.getMonth() * 30);
+    nb = d.getDate() + (d.getMonth() * 30);
   }
   var tint = nb % 255;
   var color = "hsl(" + tint + ", 60%, 75% )";
   var colorActive = "hsl(" + tint + ", 60%, 60% )";
   var colorHover = "hsl(" + tint + ", 60%, 65% )";
-  var rule = "aside a.button, .title-bar { background-color: " + color + "}"
+  var rule = "aside a.button, .title-bar { background-color: " + color + "}";
   var ruleActive = "aside a.button.active { background-color: " + colorActive + "}";
   var ruleHover = "aside a.button:hover { background-color: " + colorHover + "}";
   var ruleProgressBar = "#nprogress .bar { background: " + color + " !important}";
@@ -91,7 +93,7 @@ function refreshCurrentProg() {
   });
 }
 refreshCurrentProg();
-setInterval(refreshCurrentProg, 7*1000);
+setInterval(refreshCurrentProg, 15*1000);
 
 
 // Search
@@ -102,7 +104,7 @@ $("#search").click(function(event) {
     method: "POST",
     url: "/get-programmation",
     dataType: "json",
-    data : { 
+    data : {
       "action" : "around",
       "date" : $("#searchDate").val(),
       "hour" : $("#searchHour").val()
@@ -123,54 +125,41 @@ $("#search").click(function(event) {
 
 
 // Player
-var activeSong;
-function displayPlay (state) {
+var activeSong = document.getElementById("audio");
+function makePlay (state) {
   if (state) {
+    activeSong.play();
     $("#progress").show();
     $("#player #playPause").attr("src", "/img/pause.png");
   } else {
+    activeSong.pause();
     $("#progress").hide();
     $("#player #playPause").attr("src", "/img/play.svg");
   }
 }
 $("#playPause").click(function(event) {
-   activeSong = document.getElementById("audio");
-  if(activeSong.paused) {
-    displayPlay(true);
-    activeSong.play();
-  } else {
-    displayPlay(false);
-    activeSong.pause();
-  }
+  if(activeSong.paused)
+    makePlay(true);
+  else
+    makePlay(false);
 });
 $("#audio").bind('timeupdate', function() {
-  activeSong = document.getElementById("audio");
   if (!live()) {
     var percentageOfSong = (activeSong.currentTime/activeSong.duration);
     var currentTime = formatSecondsAsTime(activeSong.currentTime)
     var duration = formatSecondsAsTime(activeSong.duration)
     $("#progressText").text(currentTime + "/" + duration);
     $("#progress").attr("value", percentageOfSong);
-  } else {
-    $("#progress").removeAttr("value");
-    $("#progressText").html("<span class='badge'>Live</span>");
   }
 });
+$("#progress").click(function(event) {
+  var percent = event.offsetX / this.offsetWidth;
+  activeSong.currentTime = percent * activeSong.duration;
+});
 function live() {
-  activeSong = document.getElementById("audio");
   if (isFinite(activeSong.duration))
     return false;
   return true;
-}
-function formatSecondsAsTime(secs) {
-  var hr  = Math.floor(secs / 3600);
-  var min = Math.floor((secs - (hr * 3600))/60);
-  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
-  if (min < 10)
-    min = "0" + min; 
-  if (sec < 10)
-    sec  = "0" + sec;
-  return min + ':' + sec;
 }
 function refreshCurrentTitle() {
   activeSong = document.getElementById("audio");
@@ -185,7 +174,8 @@ function refreshCurrentTitle() {
       }
     }).done(function(prog) {
       prog = removeSecFromProg(prog[0]);
-      $("#player #title").text(prog.slice(5));
+      prog = removeTimeFromProg(prog);
+      $("#player #title").text(prog);
     }).fail(function(data) {
       $("#player #title").text("Erreur");
     });
@@ -193,6 +183,29 @@ function refreshCurrentTitle() {
 }
 refreshCurrentTitle();
 setInterval(refreshCurrentTitle, 2*1000);
+//Player Menu
+function returnToLive () {
+  $('#playerMenu').foundation("close");
+  var streamLive = $("#audio source").data("streamurl");
+  activeSong.src = streamLive;
+  $("#player #title").text("Chargement...")
+  $("#progress").removeAttr("value");
+  $("#progressText").html("<span class='badge'>Live</span>");
+  activeSong.load();
+  makePlay(true);
+};
+$("#returnToLive").click(function(event) {
+  returnToLive();
+});
+$("#getStream").click(function(event) {
+   var stream = $("#audio source").attr("src");
+   window.location.href= stream;
+});
+// On any error, reload live
+$("#audio").on("error", function (e) {
+  alert("Il y a une erreur sur la lecture en cours, nous rechargeons le live");
+  returnToLive();
+});
 
 
 // Podcasts
@@ -203,21 +216,31 @@ $("#content").on("click", "#podcast .thumbnail", function () {
    $("#player #title").text($(this).data("title"))
    activeSong.load();
    activeSong.play();
-   displayPlay(true);
+   makePlay(true);
 });
 
+// Prevent drag img
+$("img").mousedown( function(e) { e.preventDefault() } ); // fix for IE
 
-//Player Menu
-$("#returnToLive").click(function(event) {
-   var streamLive = $("#audio source").data("streamurl");
-   activeSong.src = streamLive;
-   $("#player #title").text("Chargement...")
-   activeSong.load();
-   activeSong.play();
-   displayPlay(true);
-   $('#playerMenu').foundation("close");
-});
-$("#getStream").click(function(event) {
-   var stream = $("#audio source").attr("src");
-   window.location.href= stream;
-});
+
+// Utils Functions
+function twoDigitsNumber (s) { 
+  return ("0" + s).slice(-2);
+}
+function returnDate () {
+  var d = new Date();
+  d.setSeconds(d.getSeconds() - 3600*24);
+  return d.getDate() + "/" + ("0" + (d.getMonth()+1)).slice(-2); 
+}
+function formatSecondsAsTime(secs) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600))/60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+  return twoDigitsNumber(min) + ':' + twoDigitsNumber(sec);
+}
+function removeTimeFromProg (s) {
+  return s.slice(5);
+}
+function removeSecFromProg(s) {
+  return s.slice(0,5) + s.slice(8);
+}

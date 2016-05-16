@@ -1,7 +1,6 @@
 // Init modules
 var fs = require("fs");
 var express = require("express");
-var sharejss = require("sharejss"); 
 var bodyParser = require("body-parser");
 var app = express();
 
@@ -9,9 +8,9 @@ var app = express();
 app.locals.config = require('./config/config.json');
 var config = app.locals.config;
 
-// Custom shared functions
-app.locals.myFunctions = sharejss("./static/js/shared.js"); 
-var myFunctions = app.locals.myFunctions;
+// Functions
+var func = {} // Later defined
+app.locals.func = func;
 
 // Public dir
 app.use(express.static('static'));
@@ -33,7 +32,7 @@ app
     res.render('grille-des-programmes', { ajax: req.query.ajax } );
 })
 .get('/podcasts', function (req, res) {
-    var podcasts = getPodcasts();
+    var podcasts = func.getPodcasts();
     res.render('podcasts', { 
       ajax: req.query.ajax, 
       podcasts: podcasts
@@ -44,9 +43,9 @@ app
 })
 .post('/get-programmation', function (req, res) {
     if (req.body.action == "last")
-      getLastProg(req, res);
+      func.getLastProg(req, res);
     else if (req.body.action == "around")
-      getAroundProg(req, res);
+      func.getAroundProg(req, res);
     else 
       res.sendStatus(400);
 })
@@ -59,12 +58,18 @@ app.listen(config.PORT, function () {
   console.log(config.SITE_TITLE + " listening on port : " + config.PORT);
 });
 
-
-
-
 /////////////
 // Functions
-function getPodcasts () {
+func.getPodcasts = function () {
+  var beautifulNames = [];
+  var file = config.LINKNAMES_FILE;
+  data = fs.readFileSync(file, 'utf-8');
+  var lines = data.trim().split("\n");
+  for (line of lines) {
+    var originalName = line.split(":")[0];
+    var beautifulName = line.split(":")[1];
+    beautifulNames[originalName] = beautifulName;
+  };
   var podcasts = [];
   var files = fs.readdirSync(config.PODCAST_FOLDER);
   files.forEach(function (file) {
@@ -75,32 +80,17 @@ function getPodcasts () {
       podcast.file = config.PODCAST_URL + file;
       podcast.date = date;
       podcast.originalCategory = category;
-      podcast.category = beautifulNameCategory(category);
+      podcast.category = beautifulNames[category] || category;
       podcasts.push(podcast);
     } 
   });
   return podcasts;
 }
-
-function beautifulNameCategory (originalCategory) {
-  var file = "./config/linkNames.txt";
-  var category = originalCategory;
-  data = fs.readFileSync(file, 'utf-8');
-  var lines = data.trim().split("\n");
-  for (line of lines) {
-    var f1 = line.split(":")[0];
-    var f2 = line.split(":")[1];
-    if(f1 == originalCategory)
-      return f2;
-  };
-  return category;
-}
-
-function getLastProg (req, res) {
+func.getLastProg = function (req, res) {
   var number = req.body.number || 1;
   var d = new Date();
   var file = d.getFullYear() + "-";
-  file += myFunctions.twoDigitsNumber(d.getMonth()+1) + "-";
+  file += func.twoDigitsNumber(d.getMonth()+1) + "-";
   file += d.getDate() + "_airplay.log";
   file = config.AIRPLAY_FOLDER + file;
   fs.readFile(file, 'utf-8', function(err, data) {
@@ -113,8 +103,7 @@ function getLastProg (req, res) {
       res.send(result);  
   });
 }
-
-function getAroundProg (req, res) {
+func.getAroundProg = function (req, res) {
   var date = req.body.date;
   var hour = req.body.hour;
   if (!date || !hour) res.sendStatus(400);
@@ -137,9 +126,9 @@ function getAroundProg (req, res) {
         d.setHours(hours);
         d.setMinutes(minutes);
         d.setSeconds(d.getSeconds() - gap*60);
-        numberSearchMin = parseInt("" + d.getHours() + myFunctions.twoDigitsNumber(d.getMinutes()));
+        numberSearchMin = parseInt("" + d.getHours() + func.twoDigitsNumber(d.getMinutes()));
         d.setSeconds(d.getSeconds() + gap*2*60);
-        numberSearchMax = parseInt("" + d.getHours() + myFunctions.twoDigitsNumber(d.getMinutes()));
+        numberSearchMax = parseInt("" + d.getHours() + func.twoDigitsNumber(d.getMinutes()));
         var results = [];
         var lines = data.trim().split("\n");
         lines.forEach(function (line) {
@@ -150,5 +139,16 @@ function getAroundProg (req, res) {
         res.send(JSON.stringify(results));  
     });
   }
+},
+func.formatDate = function (mdate) {
+  return mdate.slice(6) + "/" + mdate.slice(4,6) + "/" + mdate.slice(0,4);
 }
-
+func.returnRelativeDate = function(i) {
+  if (!i) var i = 0;
+    var d = new Date();
+    d.setSeconds(d.getSeconds() - 3600*24*i);
+    return d.getDate() + "/" + func.twoDigitsNumber(d.getMonth()+1); 
+}
+func.twoDigitsNumber = function (s) { 
+  return ("0" + s).slice(-2);
+}

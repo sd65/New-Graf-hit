@@ -19,7 +19,6 @@
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
-    "pug": "^2.0.0-alpha6",
-    "sharejss": "^1.0.0"
+    "pug": "^2.0.0-alpha6"
   }
 }

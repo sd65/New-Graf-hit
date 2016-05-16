@@ -6,5 +6,6 @@
   "PODCAST_FOLDER": "./tests/",
   "PODCAST_URL": "http://podcast.grafhit.net/",
   "AIRPLAY_FOLDER": "./tests/",
+  "LINKNAMES_FILE": "./config/linkNames.txt",
   "GMAPS_API_KEY": "AIzaSyDPPeWxV7INWCL3RYyzSTLwnIcbS9yuBjY"
 }
