@@ -41,8 +41,7 @@ coMysql.connect(function(err) {
 // Define routes
 app
 .get('/', function (req, res) {
-  var actus = func.getActus(function(actus) {
-    console.log(actus)
+  func.getActus(function(actus) {
     res.render('index', { 
       ajax: req.query.ajax,
       actus : actus
@@ -53,11 +52,12 @@ app
     res.render('grille-des-programmes', { ajax: req.query.ajax } );
 })
 .get('/podcasts', function (req, res) {
-    var podcasts = func.getPodcasts();
+  func.getPodcasts(function(podcasts) {
     res.render('podcasts', { 
       ajax: req.query.ajax, 
       podcasts: podcasts
     });
+  });
 })
 .get('/a-propos', function (req, res) {
     res.render('a-propos', { ajax: req.query.ajax } );
@@ -81,31 +81,33 @@ app.listen(config.PORT, function () {
 
 /////////////
 // Functions
-func.getPodcasts = function () {
+func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
-  data = fs.readFileSync(file, 'utf-8');
-  var lines = data.trim().split("\n");
-  for (line of lines) {
-    var originalName = line.split(":")[0];
-    var beautifulName = line.split(":")[1];
-    beautifulNames[originalName] = beautifulName;
-  };
-  var podcasts = [];
-  var files = fs.readdirSync(config.PODCAST.FOLDER);
-  files.forEach(function (file) {
-    if (file.substr(-4) == ".mp3") {
-      var date = file.split("_")[0]; 
-      var category = file.split("_")[1]; 
-      var podcast = {};
-      podcast.file = config.PODCAST.URL + file;
-      podcast.date = date;
-      podcast.originalCategory = category;
-      podcast.category = beautifulNames[category] || category;
-      podcasts.push(podcast);
-    } 
+  fs.readFile(file, 'utf-8', function(err, data) {
+    var lines = data.trim().split("\n");
+    for (line of lines) {
+      var originalName = line.split(":")[0];
+      var beautifulName = line.split(":")[1];
+      beautifulNames[originalName] = beautifulName;
+    };
+    var podcasts = [];
+    fs.readdir(config.PODCAST.FOLDER, function(err, files) {
+      files.forEach(function (file) {
+        if (file.substr(-4) == ".mp3") {
+          var date = file.split("_")[0]; 
+          var category = file.split("_")[1]; 
+          var podcast = {};
+          podcast.file = config.PODCAST.URL + file;
+          podcast.date = date;
+          podcast.originalCategory = category;
+          podcast.category = beautifulNames[category] || category;
+          podcasts.push(podcast);
+        } 
+      });
+      cb(podcasts);
+    });
   });
-  return podcasts;
 }
 func.getLastProg = function (req, res) {
   var number = req.body.number || 1;
