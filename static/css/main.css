@@ -51,10 +51,16 @@ aside #nowPlaying {
 
 aside #nowPlaying p {
  margin-bottom: .3em;
+ font-size: 1.2em;
+}
+
+aside a.button {
+  margin-bottom: 3px;
 }
 
 aside #search {
  margin-bottom: .5em;
+ background-color: #999;
 }
 
 aside #nowPlaying ul {

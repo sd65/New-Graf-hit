@@ -4,21 +4,26 @@
 $(document).foundation();
 
 // Dynamic colors
+var insertAt = 0;
 function setDynamicColors(nb) {
   if(!nb) {
-    var d = new Date();
-    nb = d.getDate() + (d.getMonth() * 30);
+    nb = moment().format("DDD");
   }
-  var tint = nb % 255;
-  var color = "hsl(" + tint + ", 60%, 75% )";
-  var colorActive = "hsl(" + tint + ", 60%, 60% )";
-  var colorHover = "hsl(" + tint + ", 60%, 65% )";
+  if (nb > 360)
+    nb = 360;
+  var tint = (240 - nb) % 360;
+  var color = "hsl(" + tint + ", 35%, 75%)";
+  var colorActive = "hsl(" + tint + ", 35%, 50%)";
+  var colorHover = "hsl(" + tint + ", 35%, 60%)";
   var rule = "aside a.button, .title-bar { background-color: " + color + "}";
   var ruleActive = "aside a.button.active { background-color: " + colorActive + "}";
   var ruleHover = "aside a.button:hover { background-color: " + colorHover + "}";
   var ruleProgressBar = "#nprogress .bar { background: " + color + " !important}";
   var sheet = window.document.styleSheets[0];
-  var insertAt = sheet.cssRules.length;
+  if (insertAt) // Permit refresh in browser when calling func
+    for(var i = 0; i<4; i++)
+      sheet.deleteRule(insertAt);
+  insertAt = sheet.cssRules.length;
   sheet.insertRule(rule, insertAt);
   sheet.insertRule(ruleActive, insertAt);
   sheet.insertRule(ruleHover, insertAt);
@@ -64,6 +69,10 @@ refreshActivePageInMenu();
 // Set defaults select options in menu
 var selector = "#searchDate option[value='" + moment().format("DD/MM") + "']";
 $(selector).attr("selected", "selected").text("Aujourd'hui");
+selector = "#searchDate option[value='" + moment().subtract(1, "days").format("DD/MM") + "']";
+$(selector).text("Hier");
+selector = "#searchDate option[value='" + moment().subtract(2, "days").format("DD/MM") + "']";
+$(selector).text("Avant-hier");
 selector = "#searchHour option[value^='" + moment().format("HH") + "']";
 $(selector).first().attr("selected", "selected");
 
