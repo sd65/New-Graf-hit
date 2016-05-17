@@ -165,7 +165,31 @@ option, select {
   display: block;
   width: 100%;
   height: 15px;
+  border: 0;
 }
+
+/* Firefox */
+progress {
+   background: #FFFFFF;
+}
+progress:not([value])::-moz-progress-bar {
+  background-image: url("/img/indeterminate.gif");
+}
+progress::-moz-progress-bar { 
+    background: #EBEBEB;  
+}
+/* Chrome */
+progress::-webkit-progress-bar {
+    background: #FFFFFF;
+}
+progress:not([value])::-webkit-progress-bar {
+  background-image: url("/img/indeterminate.gif");
+}
+progress::-webkit-progress-value {
+    background: #EBEBEB;
+}
+
+
 
 #player #progressText {
   padding-right: .6em;
