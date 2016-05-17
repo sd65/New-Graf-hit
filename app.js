@@ -1,10 +1,8 @@
 // Init modules
 var fs = require("fs");
-var path = require("path");
 var mysql = require("mysql")
 var moment = require('moment');
 var express = require("express");
-var chokidar = require('chokidar');
 var compress = require('compression');
 var bodyParser = require("body-parser");
 
@@ -33,6 +31,7 @@ app.use(express.static("static", {
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
+
 // Parse JSON in POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,10 +47,6 @@ coMysql.connect(function(err) {
   if (err)
     console.error("Erreur lors de la connexion à la base MYSQL.");
 });
-
-// My super cache
-var useCache = true;
-var cache = [];
 
 // Define routes
 app
@@ -107,7 +102,7 @@ app.listen(config.PORT, function () {
 func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
-  func.myReadPath(file, function(err, data) {
+  fs.readFile(file, 'utf-8', function(err, data) {
     var lines = data.trim().split("\n");
     for (line of lines) {
       var originalName = line.split(":")[0];
@@ -115,7 +110,7 @@ func.getPodcasts = function (cb) {
       beautifulNames[originalName] = beautifulName;
     };
     var podcasts = [];
-    func.myReadPath(config.PODCAST.FOLDER, function(err, files) {
+    fs.readdir(config.PODCAST.FOLDER, function(err, files) {
       files.forEach(function (file) {
         if (file.substr(-4) == ".mp3") {
           var date = file.split("_")[0]; 
@@ -137,7 +132,7 @@ func.getLastProg = function (req, res) {
   var file = moment().format("YYYY-MM-DD");
   file += "_airplay.log";
   file = config.AIRPLAY_FOLDER + file;
-  func.myReadPath(file, function(err, data) {
+  fs.readFile(file, 'utf-8', function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
@@ -150,7 +145,7 @@ func.getLastProg = function (req, res) {
 func.getProg = function (req, res) {
   var progs = [];
   file = config.PROG_FOLDER + "default_prog.csv";
-  func.myReadPath(file, function(err, data) {
+  fs.readFile(file, 'utf-8', function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
@@ -201,7 +196,7 @@ func.getAroundProg = function (req, res) {
     var file = moment(date, "DD/MM").format("YYYY-MM-DD");
     file += "_airplay.log";
     file = config.AIRPLAY_FOLDER + file;
-    fonc.myReadPath(file, function(err, data) {
+    fs.readFile(file, 'utf-8', function(err, data) {
         if (err) {
           res.sendStatus(404);
           return;
@@ -220,59 +215,11 @@ func.getAroundProg = function (req, res) {
         res.send(JSON.stringify(results));  
     });
   }
-}
+},
 func.returnRelativeDate = function(i) {
   if (!i) 
     var i = 0;
   var date = moment().subtract(i, "days").format("DD/MM");
   var humanDate = moment().subtract(i, "days").format("dddd Do MMMM");
   return [date, humanDate];
-}
-func.myReadPath = function (myPath, cb) {
-  myPath = path.resolve(myPath)
-  if(useCache) {
-    if (myPath in cache) {
-      console.log("CACHE HIT FOR " + myPath);
-      cb(null, cache[myPath]);
-    } else {
-      func.storeInCache(myPath, function(err, data) {
-        if (err) 
-          cb(err)
-        else {
-          chokidar.watch(myPath).on("raw", function (event, myPath, stats) {
-              func.storeInCache(stats.watchedPath);
-          });
-          cb(null, data);
-        }
-      });
-    }
-  }
-  else
-    func.myRead(myPath, cb);
-}
-func.storeInCache = function (myPath, cb) {
-  if (!cb)
-    var cb = function() {};
-  var cb2 = function(err, data) {
-    if (err) 
-      cb(err)
-    else {
-      console.log("NOW IN CACHE " + myPath);
-      cache[myPath] = data;
-      cb(null, data)
-    }
-  }
-  func.myRead(myPath, cb2);
-}
-func.myRead = function (myPath, cb) {
-  fs.stat(myPath, function (err, stats) {
-    if (!stats) {
-      cb(err)
-      return
-    }
-    if (stats.isFile())
-      fs.readFile(myPath, 'utf-8', cb);
-    else
-      fs.readdir(myPath, cb);
-  });
 }
