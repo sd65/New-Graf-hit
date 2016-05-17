@@ -13,6 +13,7 @@
   "LINKNAMES_FILE": "./config/linkNames.txt",
   "PROG_FOLDER": "./tests/",
   "GMAPS_API_KEY": "AIzaSyDPPeWxV7INWCL3RYyzSTLwnIcbS9yuBjY",
+  "LASTFM_API_KEY": "ad384538e24607a31e1c1aa382dbd95b",
   "MYSQL" : {
     "HOST" : "xxx.xxx.xxx.xxx",
     "USER" : "root",

@@ -173,7 +173,8 @@ $("#audio").on("error", function (e) {
 $("#content").on("click", ".podcast .thumbnail", function () {
    activeSong = document.getElementById("audio");
    activeSong.src = $(this).data("file");
-   $("#player #title").text($(this).data("title"))
+   $("#player #title").text($(this).data("title"));
+   updateCover("setDefault");
    activeSong.load();
    activeSong.play();
    makePlay(true);
@@ -199,8 +200,10 @@ ws.onmessage = function (event) {
   $.each(data.progs, function(i, prog) {
     prog = removeSecFromProg(prog);
     if(i==0) {
-      if(live())
+      if(live()) {
         $("#player #title").text(prog.slice(6));
+        updateCover();
+      }
       prog = "<b>" + prog + "</b>";
     }
     html += "<li>" + prog + "</li>";
@@ -212,3 +215,27 @@ $(window).on('beforeunload', function(){
   activeSong.parentElement.removeChild(activeSong);
   ws.close();
 });
+function updateCover(action) {
+  if (action === "setDefault") {
+    $("#cover").attr("src", "/img/logo.png");
+  } else {
+    var text = $("#player #title").text();
+    $.ajax({
+      method: "GET",
+      url: "http://ws.audioscrobbler.com/2.0/",
+      data : {
+        "method" : "track.search",
+        "track" : text,
+        "api_key": window.apiKey,
+        "format": "json"
+      }
+    }).always(function(json) {
+      if(typeof json.results.trackmatches.track[0] != "undefined") {
+        var url = json.results.trackmatches.track[0].image[1]["#text"];
+        $("#cover").attr("src", url);
+      }
+      else
+        updateCover("setDefault");
+    });
+  }
+}
