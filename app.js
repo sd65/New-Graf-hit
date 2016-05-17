@@ -40,7 +40,6 @@ app.use(express.static("static", {
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
-
 // Parse JSON in POST requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -98,7 +97,6 @@ app
     res.render('404');
 });
 
-
 // Prepare the changing prog file
 schedule.scheduleJob('58 23 * * *', function(){
     console.log('Changing watcher');
@@ -124,7 +122,6 @@ wss.on('connection', function (ws) {
 server.listen(config.PORT, function () {
   console.log(config.SITE.TITLE + " listening on port : " + config.PORT);
 });
-
 
 // Functions
 func.getPodcasts = function (cb) {
