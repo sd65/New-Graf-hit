@@ -50,6 +50,7 @@ coMysql.connect(function(err) {
 });
 
 // My super cache
+var useCache = true;
 var cache = [];
 
 // Define routes
@@ -149,7 +150,7 @@ func.getLastProg = function (req, res) {
 func.getProg = function (req, res) {
   var progs = [];
   file = config.PROG_FOLDER + "default_prog.csv";
-  fs.readFile(file, 'utf-8', function(err, data) {
+  func.myReadPath(file, function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
@@ -200,7 +201,7 @@ func.getAroundProg = function (req, res) {
     var file = moment(date, "DD/MM").format("YYYY-MM-DD");
     file += "_airplay.log";
     file = config.AIRPLAY_FOLDER + file;
-    fs.readFile(file, 'utf-8', function(err, data) {
+    fonc.myReadPath(file, function(err, data) {
         if (err) {
           res.sendStatus(404);
           return;
@@ -229,21 +230,25 @@ func.returnRelativeDate = function(i) {
 }
 func.myReadPath = function (myPath, cb) {
   myPath = path.resolve(myPath)
-  if (myPath in cache) {
-    console.log("CACHE HIT FOR " + myPath);
-    cb(null, cache[myPath]);
-  } else {
-    func.storeInCache(myPath, function(err, data) {
-      if (err) 
-        cb(err)
-      else {
-        chokidar.watch(myPath).on("raw", function (event, myPath, stats) {
-            func.storeInCache(stats.watchedPath);
-        });
-        cb(null, data);
-      }
-    });
+  if(useCache) {
+    if (myPath in cache) {
+      console.log("CACHE HIT FOR " + myPath);
+      cb(null, cache[myPath]);
+    } else {
+      func.storeInCache(myPath, function(err, data) {
+        if (err) 
+          cb(err)
+        else {
+          chokidar.watch(myPath).on("raw", function (event, myPath, stats) {
+              func.storeInCache(stats.watchedPath);
+          });
+          cb(null, data);
+        }
+      });
+    }
   }
+  else
+    func.myRead(myPath, cb);
 }
 func.storeInCache = function (myPath, cb) {
   if (!cb)
@@ -257,14 +262,17 @@ func.storeInCache = function (myPath, cb) {
       cb(null, data)
     }
   }
+  func.myRead(myPath, cb2);
+}
+func.myRead = function (myPath, cb) {
   fs.stat(myPath, function (err, stats) {
     if (!stats) {
-      cb2(err)
+      cb(err)
       return
     }
     if (stats.isFile())
-      fs.readFile(myPath, 'utf-8', cb2);
+      fs.readFile(myPath, 'utf-8', cb);
     else
-      fs.readdir(myPath, cb2);
+      fs.readdir(myPath, cb);
   });
 }
