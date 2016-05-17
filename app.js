@@ -155,8 +155,7 @@ func.getPodcasts = function (cb) {
 func.getLastProg = function (cb) {
   fs.readFile(func.getCurrentProgFile(), 'utf-8', function(err, data) {
       if (err) {
-        res.sendStatus(500);
-        return;
+        cb("");
       }
       var lines = data.trim().split("\n");
       var progs = lines.slice(-5).reverse();
