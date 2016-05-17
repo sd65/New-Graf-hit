@@ -185,17 +185,19 @@ function removeSecFromProg(s) {
 var host = location.origin.replace(/^http/, 'ws')
 var ws = new WebSocket(host);
 ws.onmessage = function (event) {
-  var data = JSON.parse(event.data);
-  var html = "";
-  $.each(data.progs, function(i, prog) {
-    prog = removeSecFromProg(prog);
-    if(i==0) {
-      $("#player #title").text(prog.slice(6));
-      prog = "<b>" + prog + "</b>";
-    }
-    html += "<li>" + prog + "</li>";
-  });
-  $("#lastFive").html(html);
+  if(live()) {
+    var data = JSON.parse(event.data);
+    var html = "";
+    $.each(data.progs, function(i, prog) {
+      prog = removeSecFromProg(prog);
+      if(i==0) {
+        $("#player #title").text(prog.slice(6));
+        prog = "<b>" + prog + "</b>";
+      }
+      html += "<li>" + prog + "</li>";
+    });
+    $("#lastFive").html(html);
+  }
 };
 $(window).on('beforeunload', function(){
   activeSong.pause();
