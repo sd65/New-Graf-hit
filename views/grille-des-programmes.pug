@@ -31,14 +31,14 @@ block content
               element.find('.fc-title').append("<br/>" + event.details); 
             },
             viewRender: function( view, element ) {
-              var weekNumber = view.start.format('w');
+              var date = view.start.format('YYYY-w');
               $.ajax({
                 method: "POST",
                 url: "/get-programmation",
                 dataType: "json",
                 data : {
                   "action" : "forWeek",
-                  "number" : weekNumber
+                  "date" : date
                 }
               }).done(function(progs) {
                 for (prog of progs) {

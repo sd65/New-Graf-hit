@@ -167,27 +167,38 @@ func.getLastProg = function (cb) {
 }
 func.getProg = function (req, res) {
   var progs = [];
-  file = config.PROG_FOLDER + "default_prog.csv";
-  fs.readFile(file, 'utf-8', function(err, data) {
-      if (err) {
-        res.sendStatus(500);
-        return;
-      }
-      var lines = data.trim().split("\n");
-      for (line of lines) {
-        line = line.split(";");
-        var prog = {};
-        prog.day = line[0];
-        prog.hour = line[1];
-        prog.duration = line[2];
-        prog.name = line[3];
-        prog.details = line[4];
-        prog.podcastLink = line[5];
-        prog.link = line[6];
-        prog.cover = line[7];
-        progs.push(prog);
-      };
-      res.send(progs);
+  var isDefault = false;
+  var date = req.body.date.replace("/", ""); // Injections will be difficult
+  file = config.PROG_FOLDER + date + ".csv";
+  fs.access(file, function (err) {
+    if(err) {
+      isDefault = true;
+      file = config.PROG_FOLDER + "default_prog.csv";
+    }
+    fs.readFile(file, "utf-8", function(err, data) {
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+        var lines = data.trim().split("\n");
+        for (line of lines) {
+          line = line.split(";");
+          if (isDefault) {
+            line[0] = moment(date+line[0], "YYYY-wdddd").format("YYYYMMDD");
+          }
+          var prog = {};
+          prog.day = line[0];
+          prog.hour = line[1];
+          prog.duration = line[2];
+          prog.name = line[3];
+          prog.details = line[4];
+          prog.podcastLink = line[5];
+          prog.link = line[6];
+          prog.cover = line[7];
+          progs.push(prog);
+        };
+        res.send(progs);
+    });
   });
 }
 func.getActus = function(cb) {

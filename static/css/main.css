@@ -1,3 +1,30 @@
+@font-face {
+  font-family: "Titre";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/font/lerotica-regular.ttf") format("truetype");
+}
+
+h1, h2, h5 {
+  font-family: Titre;
+}
+
+* {
+  font-family: Arial;
+}
+
+/*
+@font-face {
+  font-family: "Contenu";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/font/FreeUniversal-Regular.ttf") format("truetype");
+}
+* {
+  font-family: Contenu;
+}
+*/
+
 body {
   background: url("/img/bg.png") no-repeat, url("/img/bg2.png") repeat;
 }
