@@ -176,7 +176,7 @@ progress:not([value])::-moz-progress-bar {
   background-image: url("/img/indeterminate.gif");
 }
 progress::-moz-progress-bar { 
-    background: #EBEBEB;  
+    background: #DEDEDE;  
 }
 /* Chrome */
 progress::-webkit-progress-bar {
@@ -186,10 +186,8 @@ progress:not([value])::-webkit-progress-bar {
   background-image: url("/img/indeterminate.gif");
 }
 progress::-webkit-progress-value {
-    background: #EBEBEB;
+    background: #DEDEDE;
 }
-
-
 
 #player #progressText {
   padding-right: .6em;
@@ -255,6 +253,10 @@ progress::-webkit-progress-value {
 
 .fc-title {
   text-align: center;
+}
+
+#progress:hover, .podcast .thumbnail:hover {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 500px) {
