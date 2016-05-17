@@ -62,7 +62,7 @@ else
           a.button.expanded.hollow#returnToLive Revenir au live
           a.button.expanded.hollow#getStream Source du flux
         progress#progress(style="display:none")
-        audio#audio.hide(preload)
+        audio#audio.hide(preload="none")
           source(src=config.STREAM_URL, type="audio/mpeg", data-streamurl=config.STREAM_URL)
 
       #scripts
