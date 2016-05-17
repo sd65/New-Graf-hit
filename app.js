@@ -1,13 +1,22 @@
 // Init modules
 var fs = require("fs");
+var http = require("http")
 var mysql = require("mysql")
 var moment = require('moment');
 var express = require("express");
+var chokidar = require('chokidar');
 var compress = require('compression');
+var schedule = require('node-schedule');
 var bodyParser = require("body-parser");
+var WebSocketServer = require("ws").Server
 
 // Express is up
 var app = express();
+
+// Websocket follow
+var server = http.createServer(app)
+var wss = new WebSocketServer({server: server})
+var currentWatcher;
 
 // Moment with date locale in Fr
 moment.locale('fr');
@@ -77,9 +86,7 @@ app
   });
 })
 .post('/get-programmation', function (req, res) {
-    if (req.body.action == "last")
-      func.getLastProg(req, res);
-    else if (req.body.action == "around")
+    if (req.body.action == "around")
       func.getAroundProg(req, res);
     else if (req.body.action == "forWeek")
       func.getProg(req, res);
@@ -91,14 +98,35 @@ app
     res.render('404');
 });
 
+
+// Prepare the changing prog file
+schedule.scheduleJob('58 23 * * *', function(){
+    console.log('Changing watcher');
+    var file = func.getCurrentProgFile("tomorrow");
+    currentWatcher = func.addWatcher(file);
+});
+
+// On first co, send the prog
+// On request, refresh prog
+wss.on('connection', function (ws) {
+  var f = function() {
+    func.getLastProg(function(progs) {
+      ws.send(progs);
+    });
+  };
+  f();
+  ws.on('message', function (message) {
+    f();
+  });
+});
+
 // Launch the server
-app.listen(config.PORT, function () {
+server.listen(config.PORT, function () {
   console.log(config.SITE.TITLE + " listening on port : " + config.PORT);
 });
 
-/////////////
-// Functions
 
+// Functions
 func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
@@ -127,19 +155,17 @@ func.getPodcasts = function (cb) {
     });
   });
 }
-func.getLastProg = function (req, res) {
-  var number = req.body.number || 1;
-  var file = moment().format("YYYY-MM-DD");
-  file += "_airplay.log";
-  file = config.AIRPLAY_FOLDER + file;
-  fs.readFile(file, 'utf-8', function(err, data) {
+func.getLastProg = function (cb) {
+  fs.readFile(func.getCurrentProgFile(), 'utf-8', function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
       }
       var lines = data.trim().split("\n");
-      var result = lines.slice(-number).reverse();
-      res.send(result);  
+      var progs = lines.slice(-5).reverse();
+      var response = { "type": "progChanged" };
+      response.progs = progs;
+      cb(JSON.stringify(response))
   });
 }
 func.getProg = function (req, res) {
@@ -223,3 +249,25 @@ func.returnRelativeDate = function(i) {
   var humanDate = moment().subtract(i, "days").format("dddd Do MMMM");
   return [date, humanDate];
 }
+func.getCurrentProgFile = function (when) {
+  var file = moment();
+  if (when == "tomorrow")
+    file.add(1, "days");
+  file = file.format("YYYY-MM-DD");
+  file += "_airplay.log";
+  return config.AIRPLAY_FOLDER + file;
+}
+func.addWatcher = function (file) {
+  if(currentWatcher)
+    currentWatcher.close();
+  currentWatcher = chokidar.watch(file).on('change', function (event, path) {
+    func.getLastProg(function(progs) {
+      wss.clients.forEach(function each(client) {
+            client.send(progs);
+      });
+    });
+  });
+}
+
+// This var can now be defined
+currentWatcher = func.addWatcher(func.getCurrentProgFile());

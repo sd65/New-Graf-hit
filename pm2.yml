@@ -1,0 +1,5 @@
+apps:
+  name: grafhit
+  script: app.js
+  env:
+    NODE_ENV: production
