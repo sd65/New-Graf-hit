@@ -51,6 +51,10 @@ section#content h1 {
   font-size: 3em;
 }
 
+section#content .podcast h5 {
+  text-transform: capitalize;
+}
+
 .media-object {
   border: 1px solid rgba(10, 10, 10, 0.25);
 }

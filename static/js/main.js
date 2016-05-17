@@ -170,7 +170,7 @@ $("#audio").on("error", function (e) {
 
 // Podcasts
 // Delegate the event to the main container
-$("#content").on("click", "#podcast .thumbnail", function () {
+$("#content").on("click", ".podcast .thumbnail", function () {
    activeSong = document.getElementById("audio");
    activeSong.src = $(this).data("file");
    $("#player #title").text($(this).data("title"))

@@ -2,6 +2,7 @@
 var fs = require("fs");
 var http = require("http")
 var mysql = require("mysql")
+var marked = require('marked');
 var moment = require('moment');
 var express = require("express");
 var chokidar = require('chokidar');
@@ -59,10 +60,13 @@ coMysql.connect(function(err) {
 // Define routes
 app
 .get('/', function (req, res) {
-  func.getActus(function(actus) {
-    res.render('index', { 
-      ajax: req.query.ajax,
-      actus : actus
+  func.getHighlighted(function(highlighted) {
+    func.getActus(function(actus) {
+      res.render('index', { 
+        ajax: req.query.ajax,
+        actus : actus,
+        highlighted: highlighted
+      });
     });
   });
 })
@@ -202,24 +206,42 @@ func.getProg = function (req, res) {
   });
 }
 func.getActus = function(cb) {
-  //var query = SELECT title, startDate, endDate, content, author, status, ordre FROM posts WHERE CURDATE()<= ADDDATE(endDate,6) ORDER BY ordre ASC LIMIT 10
-  var query = 'SELECT title, startDate, endDate, content, author, status FROM posts';
+  var query = "SELECT title, content FROM posts ";
+  query += "WHERE CURDATE()<= ADDDATE(endDate,6) AND status=1 ";
+  query += "ORDER BY ordre, endDate ASC LIMIT 10";
   var actus = [];
   coMysql.query(query, function (error, results, fields) {
-    if (error)
+    if (error) {
+      cb("");
       return;
+    }
     for (var i in results){
       var actu = {};
       actu.title = results[i].title;
-      actu.startDate = results[i].startDate;
-      actu.endDate = results[i].endDate;
-      actu.content = results[i].content;
-      actu.author = results[i].author;
-      actu.status = results[i].status;
-      //actu.ordre = results[i].ordre;
+      actu.content = marked(results[i].content);
       actus.push(actu);   
     }
     cb(actus);
+  });
+}
+func.getHighlighted = function(cb) {
+  var query = "SELECT title, description, fileUrl FROM modules ";
+  query += "WHERE CURDATE()<= ADDDATE(endDate,6) AND status=1 ";
+  query += "ORDER BY startDate ASC LIMIT 10";
+  var highlighted = [];
+  coMysql.query(query, function (error, results, fields) {
+    if (error) {
+      cb("");
+      return;
+    }
+    for (var i in results){
+      var hightlight = {};
+      hightlight.title = results[i].title
+      hightlight.description = marked(results[i].description)
+      hightlight.fileUrl = results[i].fileUrl
+      highlighted.push(hightlight);   
+    }
+    cb(highlighted);
   });
 }
 func.getAroundProg = function (req, res) {

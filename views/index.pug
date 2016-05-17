@@ -6,13 +6,14 @@ block vars
 block content
   block contentAjax
     h1 À ré-écouter
-    .media-object
-      .media-object-section
-        .thumbnail
-          img(src="/img/logo.png")
-      .media-object-section
-        h4 You
-        p Really 
+    each highlight in highlighted
+      .media-object.podcast
+        .media-object-section
+          .thumbnail(data-file=highlight.fileUrl, data-title=highlight.title)
+            img(src="/img/logo.png")
+        .media-object-section
+          h5= highlight.title
+          p !{highlight.description}
     if actus
       h1 Actualités
       each actu in actus
