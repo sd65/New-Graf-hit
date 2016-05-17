@@ -1,8 +1,10 @@
 // Init modules
 var fs = require("fs");
+var path = require("path");
 var mysql = require("mysql")
 var moment = require('moment');
 var express = require("express");
+var chokidar = require('chokidar');
 var compress = require('compression');
 var bodyParser = require("body-parser");
 
@@ -104,7 +106,7 @@ app.listen(config.PORT, function () {
 func.getPodcasts = function (cb) {
   var beautifulNames = [];
   var file = config.LINKNAMES_FILE;
-  func.myReadPath(file, "file", function(err, data) {
+  func.myReadPath(file, function(err, data) {
     var lines = data.trim().split("\n");
     for (line of lines) {
       var originalName = line.split(":")[0];
@@ -112,7 +114,7 @@ func.getPodcasts = function (cb) {
       beautifulNames[originalName] = beautifulName;
     };
     var podcasts = [];
-    func.myReadPath(config.PODCAST.FOLDER, "dir", function(err, files) {
+    func.myReadPath(config.PODCAST.FOLDER, function(err, files) {
       files.forEach(function (file) {
         if (file.substr(-4) == ".mp3") {
           var date = file.split("_")[0]; 
@@ -134,7 +136,7 @@ func.getLastProg = function (req, res) {
   var file = moment().format("YYYY-MM-DD");
   file += "_airplay.log";
   file = config.AIRPLAY_FOLDER + file;
-  func.myReadPath(file, "file", function(err, data) {
+  func.myReadPath(file, function(err, data) {
       if (err) {
         res.sendStatus(500);
         return;
@@ -225,23 +227,44 @@ func.returnRelativeDate = function(i) {
   var humanDate = moment().subtract(i, "days").format("dddd Do MMMM");
   return [date, humanDate];
 }
-func.myReadPath = function (path, type, cb) {
-  if (path in cache) {
-    console.log("hit for " + path);
-    cb(null, cache[path]);
+func.myReadPath = function (myPath, cb) {
+  myPath = path.resolve(myPath)
+  if (myPath in cache) {
+    console.log("CACHE HIT FOR " + myPath);
+    cb(null, cache[myPath]);
   } else {
-    var cb2 = function(err, data) {
+    func.storeInCache(myPath, function(err, data) {
       if (err) 
         cb(err)
       else {
-        console.log("NOW IN CACHE " + path);
-        cache[path] = data;
-        cb(null, cache[path]);
+        chokidar.watch(myPath).on("raw", function (event, myPath, stats) {
+            func.storeInCache(stats.watchedPath);
+        });
+        cb(null, data);
       }
-    }
-    if (type === "file")
-      fs.readFile(path, 'utf-8', cb2);
-    else
-      fs.readdir(path, cb2);
+    });
   }
+}
+func.storeInCache = function (myPath, cb) {
+  if (!cb)
+    var cb = function() {};
+  var cb2 = function(err, data) {
+    if (err) 
+      cb(err)
+    else {
+      console.log("NOW IN CACHE " + myPath);
+      cache[myPath] = data;
+      cb(null, data)
+    }
+  }
+  fs.stat(myPath, function (err, stats) {
+    if (!stats) {
+      cb2(err)
+      return
+    }
+    if (stats.isFile())
+      fs.readFile(myPath, 'utf-8', cb2);
+    else
+      fs.readdir(myPath, cb2);
+  });
 }
