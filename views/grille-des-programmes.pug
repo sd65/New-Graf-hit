@@ -18,8 +18,9 @@ block content
             defaultView: "agendaWeek",
             lang: "fr",
             allDaySlot: false,
-            scrollTime: "06:00:00",
-            eventColor: "#777777",
+            eventBackgroundColor: "#FFF",
+            contentHeight: 700,
+            eventTextColor: "#000",
             slotLabelFormat: "HH:mm",
             buttonText: { 
               today: "Aujourd'hui"
@@ -28,7 +29,17 @@ block content
             displayEventTime: false,
             timezone: false,
             eventRender: function(event, element) {
-              element.find('.fc-title').append("<br/>" + event.details); 
+              var html = "";
+              if(event.podcastLink) {
+                html += "<a href='" + event.podcastLink + "'>" 
+                html += "<img class='playProg' src='/img/play.svg'></a>"  
+              }
+              if(event.link) {
+                html += "<a class='externalLink' href='" + event.link + "'>" 
+                html += "Lien externe</a>"  
+              }
+              element.find('.fc-title')
+              .append(html); 
             },
             viewRender: function( view, element ) {
               var date = view.start.format('YYYY-w');
@@ -48,7 +59,8 @@ block content
                     "title": prog.name, 
                     "start" : start,
                     "end" : end,
-                    "details": prog.details
+                    "podcastLink": prog.podcastLink,
+                    "link": prog.link
                   })
                 }
               });

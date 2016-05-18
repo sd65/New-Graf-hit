@@ -11,11 +11,13 @@ function setDynamicColors(nb) {
   }
   if (nb > 360)
     nb = 360;
+  // TO REMOVE FORCE VALUE
+  nb = 240;
   var tint = (240 - nb) % 360;
   var color = "hsl(" + tint + ", 35%, 75%)";
   var colorActive = "hsl(" + tint + ", 35%, 50%)";
   var colorHover = "hsl(" + tint + ", 35%, 60%)";
-  var rule = "aside a.button, .title-bar { background-color: " + color + "}";
+  var rule = "aside a.button, .title-bar, .badge { background-color: " + color + "}";
   var ruleActive = "aside a.button.active { background-color: " + colorActive + "}";
   var ruleHover = "aside a.button:hover { background-color: " + colorHover + "}";
   var ruleProgressBar = "#nprogress .bar { background: " + color + " !important}";
